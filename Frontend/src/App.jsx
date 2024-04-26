@@ -1,14 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <h1 className='text-blue-500 text-2xl'>hasdidas</h1>
-    </div>
-  )
+    <BrowserRouter>
+      <div className="App">
+        <Navbar />
+        <Sidebar />
+        {/* <Routes>
+          <Route exact path="/" element={<Home />}></Route>
+          <Route exact path="/blog/:id" element={<Post />}></Route>
+          <Route exact path="/blog/:id/edit" element={<EditPost />}></Route>
+          <Route exact path="/create" element={<BlogCreate />}></Route>
+          <Route exact path="/contact" element={<Contact />}></Route>
+        </Routes> */}
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
