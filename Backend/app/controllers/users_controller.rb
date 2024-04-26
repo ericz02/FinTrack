@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   # POST /users
   def create
@@ -20,7 +22,7 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
     render json: user
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "User not found" }, status: :not_found
+    render json: { error: 'User not found' }, status: :not_found
   end
 
   private
