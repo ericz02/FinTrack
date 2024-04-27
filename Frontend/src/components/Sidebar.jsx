@@ -13,8 +13,8 @@ const Sidebar = () => {
       <div className="p-20 flex-grow">
         <ul className="list-none">
           <li className="mb-4 hover:text-blue-200 flex items-center">
-            <AccountBoxIcon className="mr-2"/>
-            <Link to="/">Customer</Link>
+            <BarChartIcon className="mr-2" />
+            <Link to="/dashboard">Dashboard</Link>
           </li>
           <li className="mb-4 hover:text-blue-200 flex items-center">
             <FormatListBulletedIcon className="mr-2"/>
@@ -25,8 +25,8 @@ const Sidebar = () => {
             <Link to="/expenses">Expenses</Link>
           </li>
           <li className="mb-4 hover:text-blue-200 flex items-center">
-            <BarChartIcon className="mr-2" />
-            <Link to="/dashboard">Dashboard</Link>
+            <AccountBoxIcon className="mr-2"/>
+            <Link to="/customer">Customer</Link>
           </li>
 
           <p className="mt-8 mb-2 text-[14px] text-[#D4D4D4]">Other Information</p>
