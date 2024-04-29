@@ -6,6 +6,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import HelpIcon from '@mui/icons-material/Help';
 import SettingsIcon from '@mui/icons-material/Settings';
+import InfoIcon from '@mui/icons-material/Info';
 
 const Sidebar = () => {
   return (
@@ -38,7 +39,10 @@ const Sidebar = () => {
             <HelpIcon className="mr-2"/>
             <Link to="/help">Help</Link>
           </li>
-
+          <li className="mb-4 hover:text-blue-200 flex items-center">
+            <InfoIcon className="mr-2"/>
+            <Link to="/about">About</Link>
+          </li>
           <p className="mt-8 mb-2 text-[14px] text-[#D4D4D4]">Settings</p>
           <li className="mb-4 hover:text-blue-200 flex items-center">
             <SettingsIcon className="mr-2"/>

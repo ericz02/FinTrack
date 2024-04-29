@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -13,9 +16,17 @@ const Login = () => {
         password: password
       });
       console.log('Login success:', response.data);
-      // Handle further actions like redirecting the user or storing login details
+      // Show toast notification upon successful login
+      toast.success('Login successful!');
+      // Perform further actions upon successful login, e.g., redirecting the user
     } catch (error) {
-      console.error('Login failed:', error.response ? error.response.data : 'No response from server');
+      if (error.response) {
+        // Request made and server responded with an error status code
+        setError(error.response.data.message); // Display server error message to the user
+      } else {
+        // No response from the server
+        setError('Login failed. Please try again later.');
+      }
     }
   };
 
@@ -25,6 +36,13 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
+            <ToastContainer /> {/* Toast container */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong className="font-bold">Error!</strong>
+                <span className="block sm:inline"> {error}</span>
+              </div>
+            )}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
               <input
