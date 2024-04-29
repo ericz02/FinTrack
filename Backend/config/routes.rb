@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :users, only: %i[create index show] do
-    resources :transactions, only: %i[create index]
+    resources :transactions, only: %i[create index destroy]
   end
 
   post 'login', to: 'sessions#create'

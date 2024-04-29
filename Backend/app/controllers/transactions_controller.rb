@@ -2,6 +2,7 @@
 
 class TransactionsController < ApplicationController
   before_action :set_user
+  before_action :set_transaction, only: [:destroy]
 
   # POST /users/:user_id/transactions
   def create
@@ -19,6 +20,15 @@ class TransactionsController < ApplicationController
     render json: @transactions
   end
 
+  # DELETE /users/:user_id/transactions/:id
+  def destroy
+    if @transaction.destroy
+      render json: { message: 'Transaction successfully deleted.' }, status: :ok
+    else
+      render json: @transaction.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions
@@ -26,6 +36,12 @@ class TransactionsController < ApplicationController
     @user = User.find(params[:user_id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: 'User not found' }, status: :not_found
+  end
+
+  def set_transaction
+    @transaction = @user.transactions.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Transaction not found' }, status: :not_found
   end
 
   # Only allow a trusted parameter "white list" through
