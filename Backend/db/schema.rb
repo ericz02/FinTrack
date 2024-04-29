@@ -12,7 +12,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_429_014_640) do
+ActiveRecord::Schema[7.1].define(version: 20_240_429_020_039) do
+  create_table 'transactions', force: :cascade do |t|
+    t.string 'name'
+    t.decimal 'amount'
+    t.datetime 'date'
+    t.text 'description'
+    t.string 'type'
+    t.string 'merchant'
+    t.integer 'user_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['user_id'], name: 'index_transactions_on_user_id'
+  end
+
   create_table 'users', force: :cascade do |t|
     t.string 'email'
     t.string 'password_digest'
@@ -20,4 +33,6 @@ ActiveRecord::Schema[7.1].define(version: 20_240_429_014_640) do
     t.datetime 'updated_at', null: false
     t.string 'name'
   end
+
+  add_foreign_key 'transactions', 'users'
 end
