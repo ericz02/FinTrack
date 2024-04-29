@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_29_025509) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_29_030705) do
   create_table "debts", force: :cascade do |t|
     t.decimal "amount", precision: 10, scale: 2
     t.string "creditor"
@@ -48,6 +48,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_29_025509) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
+    t.string "address"
+    t.string "phone_number"
+    t.date "date_of_birth"
+    t.string "gender"
+    t.decimal "income_yearly", precision: 10, scale: 2
+    t.decimal "income_monthly", precision: 10, scale: 2
+    t.decimal "income_weekly", precision: 10, scale: 2
   end
 
   add_foreign_key "debts", "users"
