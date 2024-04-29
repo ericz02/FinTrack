@@ -5,4 +5,5 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   has_many :transactions, dependent: :destroy
+  has_many :debts, dependent: :destroy
 end
