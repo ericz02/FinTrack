@@ -1,9 +1,17 @@
+# frozen_string_literal: true
+
 class DebtsController < ApplicationController
   before_action :set_user
-  before_action :set_debt, only: [:show, :destroy]
+  before_action :set_debt, only: %i[show destroy]
 
   # GET /users/:user_id/debts/:id
   def show
+    render json: @debt
+  end
+
+  # GET /users/:user_id/debts/
+  def index
+    @debt = @user.debts
     render json: @debt
   end
 
