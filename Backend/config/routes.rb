@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :users, only: %i[create index show] do
+  resources :users, only: %i[create index show update] do
     resources :transactions, only: %i[create index destroy]
     resources :debts, only: %i[show create index destroy]
   end
