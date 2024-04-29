@@ -16,15 +16,12 @@ const Login = () => {
         password: password
       });
       console.log('Login success:', response.data);
-      // Show toast notification upon successful login
       toast.success('Login successful!');
-      // Perform further actions upon successful login, e.g., redirecting the user
+      window.location.href = '/dashboard';
+
     } catch (error) {
       if (error.response) {
-        // Request made and server responded with an error status code
-        setError(error.response.data.message); // Display server error message to the user
-      } else {
-        // No response from the server
+        setError(error.response.data.message);
         setError('Login failed. Please try again later.');
       }
     }
