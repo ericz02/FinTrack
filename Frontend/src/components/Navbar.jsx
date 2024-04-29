@@ -13,7 +13,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="mr-10">
-        <Link to="/register" className="inline-block relative mr-6">
+        <Link to="/signup" className="inline-block relative mr-6">
           <span className="text-sm text-gray-800 bg-slate-400 rounded-full py-4 px-3 hover:bg-slate-500">Sign Up</span>
         </Link>
         <Link to="/login" className="inline-block relative">

@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Budgets from "./pages/Budgets";
 import Transactions from "./pages/Transactions";
-import Register from "./pages/Register";
+import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Customer from "./pages/Customer";
 import About from "./pages/About";
@@ -31,7 +31,7 @@ function App() {
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/budgets" element={<Budgets />} />
               <Route path="/transactions" element={<Transactions />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/signup" element={<SignUp />} />
               <Route path="/login" element={<Login />} />
               <Route path="/customer" element={<Customer />} />
               <Route path="/about" element={<About />} />

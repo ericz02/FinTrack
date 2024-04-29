@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Signup = () => {
+const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,7 +17,7 @@ const Signup = () => {
         }
       });
       console.log('Signup success:', response.data);
-      // Redirect or handle response here
+      toast.success('User created successfully!');
     } catch (error) {
       console.error('Signup failed:', error.response ? error.response.data : 'Server did not respond');
     }
@@ -23,6 +25,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <ToastContainer />
       <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign Up to your account</h2>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -70,4 +73,4 @@ const Signup = () => {
   );
 }
 
-export default Signup;
+export default SignUp;
