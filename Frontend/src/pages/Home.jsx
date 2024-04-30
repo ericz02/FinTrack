@@ -1,14 +1,23 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link from React Router
 
 const Home = () => {
   return (
-    <div className="bg-white h-screen">
-      <div className="pt-20 text-center">
-        <h1 className="text-4xl text-[#4a61ff] font-bold">Welcome to FinArc!</h1>
-        <p className="text-gray-600 mt-4 mx-auto leading-relaxed max-w-xl">
-          Discover powerful insights with our easy-to-use financial analysis tools. 
-          Start by creating your account or log in to dive into our detailed statistics and reports.
-        </p>
+    <div className="relative">
+      <img
+        src="src/assets/8524544.jpg"
+        alt="home"
+        className="w-full"
+      />
+
+      <div className="absolute top-[250px] left-[90px]">
+        <h1 className="text-white text-[50px] font-bold">Save money, without</h1>
+        <h1 className="text-white text-[50px] font-bold"> thinking about it.</h1>
+        <Link to="/signup">
+          <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+            Get Started
+          </button>
+        </Link>
       </div>
     </div>
   );
