@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 // Import all pages
 import Navbar from "./components/Navbar";
@@ -16,6 +17,7 @@ import Login from "./pages/Login";
 import Customer from "./pages/Customer";
 import About from "./pages/About";
 
+
 // Separate layout for home page
 const HomeLayout = ({ children }) => (
   <>
@@ -26,6 +28,7 @@ const HomeLayout = ({ children }) => (
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         {/* Home page without sidebar */}
@@ -182,6 +185,7 @@ function App() {
         />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 

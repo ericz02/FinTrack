@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const {login} = useAuth();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -16,6 +18,7 @@ const Login = () => {
         password: password
       });
       console.log('Login success:', response.data);
+      login(response.data)
       toast.success('Login successful!');
       window.location.href = '/dashboard';
 

@@ -2,21 +2,27 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from '../context/AuthContext';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const {login} = useAuth()
 
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/users', {
         user: {
+          name:name,
           email: email,
           password: password
         }
       });
       console.log('Signup success:', response.data);
+      login(response.data)
+
       toast.success('User created successfully!');
     } catch (error) {
       console.error('Signup failed:', error.response ? error.response.data : 'Server did not respond');
@@ -31,6 +37,21 @@ const SignUp = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSignup}>
+          <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+               Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                required
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
