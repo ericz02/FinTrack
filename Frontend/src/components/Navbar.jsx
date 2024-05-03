@@ -1,11 +1,12 @@
+// src/components/Navbar.jsx
+import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from 'react'; // Currently unused, remove if not needed later
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const { logout, user } = useAuth(); // Removed login since it's not used
+    const { logout, user } = useAuth();
 
     const handleLogout = () => {
         logout();

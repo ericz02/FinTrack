@@ -6,29 +6,31 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const {login} = useAuth();
+  const { login } = useAuth();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/login', {
-        email: email,
-        password: password
-      });
-      console.log('Login success:', response.data);
-      login(response.data)
-      toast.success('Login successful!');
-      window.location.href = '/dashboard';
-
+        const response = await axios.post('http://localhost:3000/login', {
+            email: email,
+            password: password,
+        });
+        console.log('Login success:', response.data);
+        login(response.data.user);  // Passing the user object that contains id, email, and name
+        toast.success('Login successful!');
+        navigate('/dashboard');
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message);
-        setError('Login failed. Please try again later.');
-      }
+        if (error.response) {
+            setError(error.response.data.message);
+        } else {
+            setError('Login failed. Please try again later.');
+        }
     }
-  };
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -36,7 +38,7 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
-            <ToastContainer /> {/* Toast container */}
+            <ToastContainer />
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                 <strong className="font-bold">Error!</strong>
