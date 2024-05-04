@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :users, only: %i[create index show update] do
     resources :transactions, only: %i[create index destroy]
     resources :debts, only: %i[show create index destroy]
+    resources :expenses, only: %i[create index show update]
   end
 
   post 'login', to: 'sessions#create'

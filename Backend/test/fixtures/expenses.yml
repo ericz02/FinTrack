@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  category: MyString
+  vendor: MyString
+  date: 2024-05-04
+  amount: 9.99
+  purpose: MyText
+  receipt: MyString
+  reimbursable: false
+
+two:
+  category: MyString
+  vendor: MyString
+  date: 2024-05-04
+  amount: 9.99
+  purpose: MyText
+  receipt: MyString
+  reimbursable: false

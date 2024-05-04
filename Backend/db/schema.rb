@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_429_030_705) do
+ActiveRecord::Schema[7.1].define(version: 20_240_504_205_353) do
   create_table 'debts', force: :cascade do |t|
     t.decimal 'amount', precision: 10, scale: 2
     t.string 'creditor'
@@ -29,6 +29,20 @@ ActiveRecord::Schema[7.1].define(version: 20_240_429_030_705) do
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
     t.index ['user_id'], name: 'index_debts_on_user_id'
+  end
+
+  create_table 'expenses', force: :cascade do |t|
+    t.string 'category'
+    t.string 'vendor'
+    t.date 'date'
+    t.decimal 'amount'
+    t.text 'purpose'
+    t.string 'receipt'
+    t.boolean 'reimbursable'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.integer 'user_id', null: false
+    t.index ['user_id'], name: 'index_expenses_on_user_id'
   end
 
   create_table 'transactions', force: :cascade do |t|
@@ -60,5 +74,6 @@ ActiveRecord::Schema[7.1].define(version: 20_240_429_030_705) do
   end
 
   add_foreign_key 'debts', 'users'
+  add_foreign_key 'expenses', 'users'
   add_foreign_key 'transactions', 'users'
 end
