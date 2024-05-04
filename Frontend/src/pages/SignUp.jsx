@@ -1,45 +1,64 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const {login} = useAuth()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/users', {
+      const response = await axios.post("http://localhost:3000/users", {
         user: {
-          name:name,
+          name: name,
           email: email,
-          password: password
-        }
+          password: password,
+        },
       });
-      console.log('Signup success:', response.data);
-      login(response.data)
+      console.log("Signup success:", response.data);
+      login(response.data);
 
-      toast.success('User created successfully!');
+      toast.success("User created successfully!");
+      navigate("/dashboard");
     } catch (error) {
-      console.error('Signup failed:', error.response ? error.response.data : 'Server did not respond');
+      if (error.response && error.response.status === 422) {
+        // Validation error from the backend (email already exists)
+        toast.error(
+          "Email address already in use. Please choose a different one."
+        );
+      } else {
+        console.error(
+          "Signup failed:",
+          error.response ? error.response.data : "Server did not respond"
+        );
+        toast.error("Signup failed. Please try again later.");
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <ToastContainer />
-      <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign Up to your account</h2>
+      <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Sign Up to your account
+      </h2>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSignup}>
-          <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-               Name
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
               </label>
               <input
                 id="name"
@@ -53,7 +72,10 @@ const SignUp = () => {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <input
@@ -69,7 +91,10 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
@@ -84,7 +109,10 @@ const SignUp = () => {
               />
             </div>
 
-            <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button
+              type="submit"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
               Sign Up
             </button>
           </form>
@@ -92,6 +120,6 @@ const SignUp = () => {
       </div>
     </div>
   );
-}
+};
 
 export default SignUp;
