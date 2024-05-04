@@ -26,10 +26,10 @@ const Transactions = () => {
     console.debug(userId);
     try {
       const response = await axios.get(
-        `locahost:3000/users/${userId}/transactions`
+        `http://localhost:3000/users/${userId}/transactions`
       );
-      responseData = JSON.parse(response.data);
-      console.log(typeof responseData, responseData);
+
+      console.log("Response Data:", response.data);
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -62,7 +62,7 @@ const Transactions = () => {
 
   const deleteTransaction = async (transactionId) => {
     try {
-      await axios.delete(`/users/${userId}/transactions/${transactionId}`);
+      await axios.delete(`http://localhost:3000//users/${userId}/transactions`);
       setTransactions(
         transactions.filter((transaction) => transaction.id !== transactionId)
       );
