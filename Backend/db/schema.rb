@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_504_205_353) do
+ActiveRecord::Schema[7.1].define(version: 20_240_504_214_936) do
   create_table 'debts', force: :cascade do |t|
     t.decimal 'amount', precision: 10, scale: 2
     t.string 'creditor'

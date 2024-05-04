@@ -14,6 +14,11 @@ class TransactionsController < ApplicationController
     end
   end
 
+  # GET /users/:user_id/transactions/:id
+  def show
+    render json: @transaction
+  end
+
   # GET /users/:user_id/transactions
   def index
     @transactions = @user.transactions
@@ -46,6 +51,6 @@ class TransactionsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through
   def transaction_params
-    params.require(:transaction).permit(:name, :amount, :date, :description, :type, :merchant)
+    params.require(:transaction).permit(:name, :amount, :date, :description, :transaction_type, :merchant)
   end
 end

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   resources :users, only: %i[create index show update] do
-    resources :transactions, only: %i[create index destroy]
+    resources :transactions, only: %i[show create index destroy]
     resources :debts, only: %i[show create index destroy]
     resources :expenses, only: %i[create index show update]
   end
