@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_505_120_309) do
+ActiveRecord::Schema[7.1].define(version: 20_240_505_142_737) do
   create_table 'bank_accounts', force: :cascade do |t|
     t.string 'account_type'
     t.string 'account_number'
@@ -27,6 +27,18 @@ ActiveRecord::Schema[7.1].define(version: 20_240_505_120_309) do
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
     t.index ['user_id'], name: 'index_bank_accounts_on_user_id'
+  end
+
+  create_table 'budgets', force: :cascade do |t|
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.string 'name'
+    t.decimal 'savings_goal', precision: 10, scale: 2
+    t.decimal 'total_income', precision: 10, scale: 2
+    t.decimal 'total_expenses', precision: 10, scale: 2
+    t.string 'status', default: 'upcoming'
+    t.integer 'user_id'
+    t.index ['user_id'], name: 'index_budgets_on_user_id'
   end
 
   create_table 'debts', force: :cascade do |t|
@@ -90,6 +102,7 @@ ActiveRecord::Schema[7.1].define(version: 20_240_505_120_309) do
   end
 
   add_foreign_key 'bank_accounts', 'users'
+  add_foreign_key 'budgets', 'users'
   add_foreign_key 'debts', 'users'
   add_foreign_key 'expenses', 'users'
   add_foreign_key 'transactions', 'users'
