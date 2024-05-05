@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account_type: MyString
+  account_number: MyString
+  balance: 9.99
+  owner_id: 1
+  interest_rate: 9.99
+  currency: MyString
+  opening_date: 2024-05-05
+  status: MyString
+  branch_code: MyString
+  overdraft_protection: false
+  user: one
+
+two:
+  account_type: MyString
+  account_number: MyString
+  balance: 9.99
+  owner_id: 1
+  interest_rate: 9.99
+  currency: MyString
+  opening_date: 2024-05-05
+  status: MyString
+  branch_code: MyString
+  overdraft_protection: false
+  user: two

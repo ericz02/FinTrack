@@ -12,7 +12,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 20_240_505_114_418) do
+ActiveRecord::Schema[7.1].define(version: 20_240_505_120_309) do
+  create_table 'bank_accounts', force: :cascade do |t|
+    t.string 'account_type'
+    t.string 'account_number'
+    t.decimal 'balance'
+    t.decimal 'interest_rate'
+    t.string 'currency'
+    t.date 'opening_date'
+    t.string 'status'
+    t.string 'branch_code'
+    t.boolean 'overdraft_protection'
+    t.integer 'user_id', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['user_id'], name: 'index_bank_accounts_on_user_id'
+  end
+
   create_table 'debts', force: :cascade do |t|
     t.decimal 'amount', precision: 10, scale: 2
     t.string 'creditor'
@@ -73,6 +89,7 @@ ActiveRecord::Schema[7.1].define(version: 20_240_505_114_418) do
     t.decimal 'income_weekly', precision: 10, scale: 2
   end
 
+  add_foreign_key 'bank_accounts', 'users'
   add_foreign_key 'debts', 'users'
   add_foreign_key 'expenses', 'users'
   add_foreign_key 'transactions', 'users'
