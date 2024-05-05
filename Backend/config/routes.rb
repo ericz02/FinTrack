@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :expenses, only: %i[create index show update]
     resources :bank_accounts, only: %i[create index show update]
     resources :budgets, only: %i[show create index destroy]
+    resource :dashboard, only: [:show]
   end
 
   post 'login', to: 'sessions#create'
