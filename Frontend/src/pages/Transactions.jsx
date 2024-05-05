@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
+import exportTransactions from "../exports/TransactionsExport";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -82,6 +83,12 @@ const Transactions = () => {
     <div className="container mx-auto p-4">
       <ToastContainer />
       <h2 className="text-center text-2xl font-bold mb-6">Transactions</h2>
+      <button
+        onClick={() => exportTransactions(userId)}
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Export to Excel
+      </button>
       <form className="mb-6" onSubmit={addTransaction}>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <input
