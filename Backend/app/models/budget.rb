@@ -8,7 +8,7 @@ class Budget < ApplicationRecord
   # Validations
   validates :name, presence: true
   validates :savings_goal, numericality: true
-  validates :total_income, numericality: true
-  validates :total_expenses, numericality: true
+  validates :total_income, numericality: true, allow_nil: true
+  validates :total_expenses, numericality: true, allow_nil: true
   validates :status, inclusion: { in: %w[active completed upcoming] }
 end
