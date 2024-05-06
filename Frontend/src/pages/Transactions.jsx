@@ -9,7 +9,6 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const { user } = useAuth();
   const userId = user?.id;
-  console.log(userId);
   const [newTransaction, setNewTransaction] = useState({
     name: "",
     amount: "",
@@ -21,16 +20,13 @@ const Transactions = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [userId]);
 
   const fetchTransactions = async () => {
-    console.debug(userId);
     try {
       const response = await axios.get(
         `http://localhost:3000/users/${userId}/transactions`
       );
-
-      console.log("Response Data:", response.data);
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -42,7 +38,7 @@ const Transactions = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `http://localhost:3000//users/${userId}/transactions`,
+        `http://localhost:3000/users/${userId}/transactions`,
         newTransaction
       );
       setTransactions([...transactions, response.data]);
@@ -63,7 +59,7 @@ const Transactions = () => {
 
   const deleteTransaction = async (transactionId) => {
     try {
-      await axios.delete(`http://localhost:3000//users/${userId}/transactions`);
+      await axios.delete(`http://localhost:3000/users/${userId}/transactions/${transactionId}`);
       setTransactions(
         transactions.filter((transaction) => transaction.id !== transactionId)
       );
@@ -132,7 +128,6 @@ const Transactions = () => {
             onChange={handleChange}
             placeholder="Type"
             className="border border-gray-300 p-2 rounded-md"
-            //required
           />
           <input
             type="text"
@@ -159,7 +154,7 @@ const Transactions = () => {
                 <h3 className="font-bold">{transaction.name}</h3>
                 <p className="text-gray-600">{transaction.description}</p>
                 <p className="text-gray-600">
-                  {transaction.type} | {transaction.merchant}
+                  {transaction.transaction_type} | {transaction.merchant}
                 </p>
                 <p className="text-gray-600">{transaction.date}</p>
                 <p className="text-gray-600">${transaction.amount}</p>
