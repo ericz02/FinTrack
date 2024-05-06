@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       get 'export', on: :collection
     end
     resources :debts, only: %i[show create index destroy]
-    resources :expenses, only: %i[create index show update]
+    resources :expenses, only: %i[create index show updat destroy]
     resources :bank_accounts, only: %i[create index show update]
     resources :budgets, only: %i[show create index destroy]
     resource :dashboard, only: [:show]
