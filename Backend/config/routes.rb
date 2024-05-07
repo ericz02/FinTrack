@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     end
     resources :debts, only: %i[show create index destroy]
     resources :expenses, only: %i[create index show updat destroy]
-    resources :bank_accounts, only: %i[create index show update]
+    resources :bank_accounts, only: %i[create index show update destroy]
     resources :budgets, only: %i[show create index destroy]
     resource :dashboard, only: [:show]
   end
