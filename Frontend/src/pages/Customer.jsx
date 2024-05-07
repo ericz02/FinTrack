@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Debts from "./Debts"; // Ensure this is correctly imported
 import { useAuth } from "../context/AuthContext"; // Adjust the path to your AuthContext
 import BankAccounts from "./BankAccount";
+import User from "./User";
 
 const Customer = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -22,7 +23,7 @@ const Customer = () => {
                 ? "text-blue-500 border-b-2 border-blue-500"
                 : "text-gray-500"
             }`}
-            onClick={() => handleTabClick("details")}
+            onClick={() => handleTabClick("profile")}
           >
             Customer Details
           </li>
@@ -53,14 +54,7 @@ const Customer = () => {
       {activeTab === "profile" && (
         <div className="mt-4">
           <h2 className="text-xl font-bold">Profile Information</h2>
-          {/* Detailed customer information here */}
-        </div>
-      )}
-
-      {activeTab === "account" && (
-        <div className="mt-4">
-          <h2 className="text-xl font-bold">Account Settings</h2>
-          {/* Account settings content here */}
+          <User userId={userId} />{" "}
         </div>
       )}
 
@@ -70,6 +64,7 @@ const Customer = () => {
           {/* This assumes Debts component handles edits */}
         </div>
       )}
+      
       {activeTab === "account" && (
         <div className="mt-4">
           <BankAccounts userId={userId} />{" "}
