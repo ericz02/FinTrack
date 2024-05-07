@@ -18,7 +18,9 @@ Rails.application.routes.draw do
     resources :expenses, only: %i[create index show updat destroy]
     resources :bank_accounts, only: %i[create index show update destroy]
     resources :budgets, only: %i[show create index destroy]
-    resource :dashboard, only: [:show]
+    resource :dashboard, only: [:show] do
+      get 'export', on: :collection
+    end
   end
 
   post 'login', to: 'sessions#create'
