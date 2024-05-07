@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExpensesController < ApplicationController
-  before_action :set_user, only: %i[index create update destroy]
+  before_action :set_user
   before_action :set_expense, only: %i[update destroy]
 
   # GET /users/:user_id/expenses
@@ -33,6 +33,33 @@ class ExpensesController < ApplicationController
   def destroy
     @expense.destroy
     head :no_content
+  end
+
+  # GET /users/:user_id/expenses/export
+  def export
+    @expenses = @user.expenses
+    filename = "Expenses_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
+    workbook = WriteXLSX.new(filename)
+    worksheet = workbook.add_worksheet
+
+    headers = ['Category', 'Vendor', 'Date', 'Amount', 'Purpose', 'Reimbursable']
+    worksheet.write_row(0, 0, headers)
+
+    @expenses.each_with_index do |expense, index|
+      worksheet.write_row(index + 1, 0, [
+                            expense.category,
+                            expense.vendor,
+                            expense.date.strftime('%Y-%m-%d'),
+                            expense.amount,
+                            expense.purpose,
+                            expense.reimbursable ? 'Yes' : 'No'
+                          ])
+    end
+
+    workbook.close # Ensure the workbook is closed properly
+
+    # After closing the workbook, send the file
+    send_file filename, filename: filename, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   end
 
   private

@@ -4,6 +4,7 @@ import Plot from "react-plotly.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext"; // Ensure this path is correct
+import exportDashboard from "../exports/DashboardExport";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -97,6 +98,12 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <button
+        onClick={() => exportDashboard(userId)}
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Export to Excel
+      </button>
       <ToastContainer />
       <h1 className="text-2xl font-bold text-center mb-6">
         Financial Dashboard
