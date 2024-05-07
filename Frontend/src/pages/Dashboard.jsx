@@ -15,6 +15,8 @@ const Dashboard = () => {
     bankAccounts: [],
     debts: [],
     netWorth: 0,
+    totalDebt: 0,
+    totalSavings: 0,
   });
 
   useEffect(() => {
@@ -22,36 +24,18 @@ const Dashboard = () => {
 
     const fetchData = async () => {
       try {
-        const [expensesRes, debtsRes, accountsRes] = await Promise.all([
-          axios.get(`http://localhost:3000/users/${userId}/expenses`),
-          axios.get(`http://localhost:3000/users/${userId}/debts`),
-          axios.get(`http://localhost:3000/users/${userId}/bank_accounts`),
-        ]);
-        const expenses = expensesRes.data;
-        const debts = debtsRes.data;
-        const accounts = accountsRes.data;
-
-        const totalDebts = debts.reduce(
-          (sum, debt) => sum + (parseFloat(debt.amount) || 0),
-          0
+        const response = await axios.get(
+          `http://localhost:3000/users/${userId}/dashboard`
         );
-        const totalAccounts = accounts.reduce(
-          (sum, account) => sum + (parseFloat(account.balance) || 0),
-          0
-        );
-
-        // Calculate net worth
-        const netWorth = totalAccounts - totalDebts;
-
         setData({
-          expenses,
-          debts,
-          bankAccounts: accounts,
-          netWorth,
+          ...response.data.financial_summary,
+          netWorth: response.data.net_worth,
+          totalDebt: response.data.total_debt,
+          totalSavings: response.data.total_savings,
         });
       } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Failed to fetch data");
+        console.error("Error fetching dashboard data:", error);
+        toast.error("Failed to fetch dashboard data");
       }
     };
 
@@ -111,20 +95,6 @@ const Dashboard = () => {
     );
   };
 
-  const renderDebtSummary = () => {
-    const totalDebt = data.debts.reduce(
-      (sum, debt) => sum + (parseFloat(debt.amount) || 0),
-      0
-    );
-
-    return (
-      <div className="text-center p-4 border rounded-lg shadow-lg m-4">
-        <h2 className="font-bold text-xl">Total Debt</h2>
-        <p className="text-lg">{formatCurrency(totalDebt)}</p>
-      </div>
-    );
-  };
-
   return (
     <div className="container mx-auto p-4">
       <ToastContainer />
@@ -134,7 +104,10 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
         <div>{renderExpensesPieChart()}</div>
         <div>{renderExpensesBarChart()}</div>
-        <div>{renderDebtSummary()}</div>
+        <div className="text-center p-4 border rounded-lg shadow-lg m-4">
+          <h2 className="font-bold text-xl">Total Debt</h2>
+          <p className="text-lg">{formatCurrency(data.totalDebt)}</p>
+        </div>
         <div className="text-center p-4 border rounded-lg shadow-lg m-4">
           <h2 className="font-bold text-xl">Net Worth</h2>
           <p className="text-lg">{formatCurrency(data.netWorth)}</p>
