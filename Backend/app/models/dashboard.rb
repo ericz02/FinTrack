@@ -9,7 +9,7 @@ class Dashboard
 
   # Calculate net worth by subtracting total expenses from total bank account balance
   def net_worth
-    total_bank_balance - total_expenses
+    total_bank_balance - total_expenses - total_transcations - total_debt
   end
 
   # Sum of all transcations from user's bank accounts

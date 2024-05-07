@@ -17,6 +17,29 @@ class DashboardsController < ApplicationController
     }
   end
 
+  def export
+    @dashboard = Dashboard.new(@user)
+    filename = "Dashboard_#{Time.now.strftime('%Y%m%d%H%M%S')}.xlsx"
+    workbook = WriteXLSX.new(filename)
+    worksheet = workbook.add_worksheet
+
+    headers = %w[NetWorth BankBalance Transactions Expenses Debt Savings]
+    worksheet.write_row(0, 0, headers)
+
+    # Write a single row with the required information from the dashboard
+    worksheet.write_row(1, 0, [
+                          @dashboard.net_worth,
+                          @dashboard.total_bank_balance,
+                          @dashboard.total_transcations,
+                          @dashboard.total_expenses,
+                          @dashboard.total_debt,
+                          @dashboard.total_savings
+                        ])
+
+    workbook.close
+    send_file filename, filename:, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  end
+
   private
 
   # Set the user from the user_id provided in the route
