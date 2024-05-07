@@ -33,7 +33,12 @@ const Dashboard = () => {
           netWorth: response.data.net_worth,
           totalDebt: response.data.total_debt,
           totalSavings: response.data.total_savings,
+          totalExpenses: response.data.total_expenses,
+          totalTransaction: response.data.total_transcations,
+          totalSavings: response.data.total_savings,
+          TotalBankBalance: response.data.total_bank_balance,
         });
+        console.debug(response.data);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
         toast.error("Failed to fetch dashboard data");
@@ -111,6 +116,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
         <div>{renderExpensesPieChart()}</div>
         <div>{renderExpensesBarChart()}</div>
+        <br></br>
         <div className="text-center p-4 border rounded-lg shadow-lg m-4">
           <h2 className="font-bold text-xl">Total Debt</h2>
           <p className="text-lg">{formatCurrency(data.totalDebt)}</p>
@@ -118,6 +124,22 @@ const Dashboard = () => {
         <div className="text-center p-4 border rounded-lg shadow-lg m-4">
           <h2 className="font-bold text-xl">Net Worth</h2>
           <p className="text-lg">{formatCurrency(data.netWorth)}</p>
+        </div>
+        <div className="text-center p-4 border rounded-lg shadow-lg m-4">
+          <h2 className="font-bold text-xl">Total Expenses</h2>
+          <p className="text-lg">{formatCurrency(data.totalExpenses)}</p>
+        </div>
+        <div className="text-center p-4 border rounded-lg shadow-lg m-4">
+          <h2 className="font-bold text-xl">Total Transactions</h2>
+          <p className="text-lg">{formatCurrency(data.totalTransaction)}</p>
+        </div>
+        <div className="text-center p-4 border rounded-lg shadow-lg m-4">
+          <h2 className="font-bold text-xl">Saving Goals</h2>
+          <p className="text-lg">{formatCurrency(data.totalSavings)}</p>
+        </div>
+        <div className="text-center p-4 border rounded-lg shadow-lg m-4">
+          <h2 className="font-bold text-xl">Bank Account Balance</h2>
+          <p className="text-lg">{formatCurrency(data.TotalBankBalance)}</p>
         </div>
       </div>
     </div>
