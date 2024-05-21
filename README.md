@@ -4,12 +4,9 @@ Financial Tracker is a web application designed to help users manage their finan
 
 <div>
     <a href="https://www.loom.com/share/7762c4c39f4b445095fa6a95007dacfd">
-      <p>FinTrack - Demo - Watch Video</p>
-    </a>
-    <a href="https://www.loom.com/share/7762c4c39f4b445095fa6a95007dacfd">
       <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/7762c4c39f4b445095fa6a95007dacfd-with-play.gif">
     </a>
-  </div>
+</div>
 
 ## Installation
 
