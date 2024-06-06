@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { signupUser } from "../api"; 
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -15,31 +15,17 @@ const SignUp = () => {
   const handleSignup = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/users", {
-        user: {
-          name: name,
-          email: email,
-          password: password,
-        },
-      });
-      console.log("Signup success:", response.data);
-      login(response.data);
-
-      toast.success("User created successfully!");
-      navigate("/dashboard");
-    } catch (error) {
-      if (error.response && error.response.status === 422) {
-        // Validation error from the backend (email already exists)
-        toast.error(
-          "Email address already in use. Please choose a different one."
-        );
+      const response = await signupUser(name, email, password);
+      if (response.errors.length > 0) {
+        toast.error(response.errors.join(", "));
       } else {
-        console.error(
-          "Signup failed:",
-          error.response ? error.response.data : "Server did not respond"
-        );
-        toast.error("Signup failed. Please try again later.");
+        login(response.user);
+        toast.success("User created successfully!");
+        navigate("/dashboard");
       }
+    } catch (error) {
+      console.error("Signup failed:", error);
+      toast.error("Signup failed. Please try again later.");
     }
   };
 
@@ -55,7 +41,7 @@ const SignUp = () => {
           <form className="space-y-6" onSubmit={handleSignup}>
             <div>
               <label
-                htmlFor="email"
+                htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
                 Name

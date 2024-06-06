@@ -1,9 +1,23 @@
-mutation CreateUser($input: CreateUserInput!) {
-  createUser(input: $input) {
+mutation CreateUser($userInput: CreateUserInput!, $bankAccountInput: CreateBankAccountInput!) {
+  createUser(input: $userInput) {
     user {
       id
       name
       email
+    }
+  }
+  createBankAccount(input: $bankAccountInput) {
+    bankAccount {
+      id
+      accountType
+      accountNumber
+      balance
+      interestRate
+      currency
+      openingDate
+      status
+      branchCode
+      overdraftProtection
     }
   }
 }

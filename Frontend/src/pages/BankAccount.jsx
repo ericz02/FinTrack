@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
+import { request } from "graphql-request";
 
 const BankAccounts = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
@@ -23,11 +23,30 @@ const BankAccounts = () => {
 
   useEffect(() => {
     const fetchBankAccounts = async () => {
+      const query = `
+      query GetBankAccounts($userId: ID!) {
+        user(id: $userId) {
+          bankAccounts {
+            id
+            accountType
+            accountNumber
+            balance
+            interestRate
+            currency
+            openingDate
+            status
+            branchCode
+            overdraftProtection
+          }
+        }
+      }
+      `;
+
+      const variables = { userId };
+
       try {
-        const response = await axios.get(
-          `http://localhost:3000/users/${userId}/bank_accounts`
-        );
-        setBankAccounts(response.data);
+        const response = await request("http://localhost:3000/graphql", query, variables);
+        setBankAccounts(response.user.bankAccounts);
       } catch (error) {
         console.error("Error fetching bank accounts:", error);
         toast.error("Failed to fetch bank accounts");
@@ -39,12 +58,28 @@ const BankAccounts = () => {
 
   const addBankAccount = async (event) => {
     event.preventDefault();
+    const mutation = `
+      mutation AddBankAccount($bankAccount: BankAccountInput!) {
+        addBankAccount(bankAccount: $bankAccount) {
+          id
+          account_type
+          account_number
+          balance
+          interest_rate
+          currency
+          opening_date
+          status
+          branch_code
+          overdraft_protection
+        }
+      }
+    `;
+
+    const variables = { bankAccount: newBankAccount };
+
     try {
-      const response = await axios.post(
-        `http://localhost:3000/users/${userId}/bank_accounts`,
-        { bank_account: newBankAccount }
-      );
-      setBankAccounts([...bankAccounts, response.data]);
+      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      setBankAccounts([...bankAccounts, response.addBankAccount]);
       setNewBankAccount({
         account_type: "",
         account_number: "",
@@ -58,19 +93,25 @@ const BankAccounts = () => {
       });
       toast.success("Bank account added successfully!");
     } catch (error) {
-      console.error("Failed to add bank account:", error.response);
+      console.error("Failed to add bank account:", error);
       toast.error("Failed to add bank account");
     }
   };
 
   const deleteBankAccount = async (bankAccountId) => {
+    const mutation = `
+      mutation DeleteBankAccount($id: ID!) {
+        deleteBankAccount(id: $id) {
+          id
+        }
+      }
+    `;
+
+    const variables = { id: bankAccountId };
+
     try {
-      await axios.delete(
-        `http://localhost:3000/users/${userId}/bank_accounts/${bankAccountId}`
-      );
-      setBankAccounts(
-        bankAccounts.filter((account) => account.id !== bankAccountId)
-      );
+      await request("http://localhost:3000/graphql", mutation, variables);
+      setBankAccounts(bankAccounts.filter((account) => account.id !== bankAccountId));
       toast.success("Bank account deleted successfully!");
     } catch (error) {
       console.error("Failed to delete bank account:", error);
@@ -134,7 +175,8 @@ const BankAccounts = () => {
           </div>
           <div className="w-full px-3">
             <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              className="block uppercase tracking-wide text-gray-700
+              text-xs font-bold mb-2"
               htmlFor="balance"
             >
               Account number
