@@ -6,6 +6,7 @@ mutation CreateUser($userInput: CreateUserInput!, $bankAccountInput: CreateBankA
       email
     }
   }
+
   createBankAccount(input: $bankAccountInput) {
     bankAccount {
       id
@@ -19,5 +20,31 @@ mutation CreateUser($userInput: CreateUserInput!, $bankAccountInput: CreateBankA
       branchCode
       overdraftProtection
     }
+  }
+}
+
+mutation CreateBudget($input: CreateBudgetInput!) {
+  createBudget(input: $input) {
+    id
+    name
+    savingsGoal
+    totalIncome
+    totalExpenses
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+mutation DestroyBudget($id: ID!) {
+  destroyBudget(input: { id: $id }) {
+    id
+    name
+    savingsGoal
+    totalIncome
+    totalExpenses
+    status
+    createdAt
+    updatedAt
   }
 }
