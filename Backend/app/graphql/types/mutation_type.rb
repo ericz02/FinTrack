@@ -13,5 +13,9 @@ module Types
     # Mutations for Budget
     field :create_budget, mutation: Mutations::CreateBudget
     field :destroy_budget, mutation: Mutations::DestroyBudget
+
+    # Mutations for Transaction
+    field :create_transaction, mutation: Mutations::CreateTransaction
+    field :delete_transaction, mutation: Mutations::DeleteTransaction
   end
 end

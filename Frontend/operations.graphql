@@ -48,3 +48,25 @@ mutation DestroyBudget($id: ID!) {
     updatedAt
   }
 }
+
+mutation($input: CreateTransactionInput!) {
+  createTransaction(input: $input) {
+    transaction {
+      id
+      name
+      amount
+      date
+      description
+      transactionType
+      merchant
+    }
+  }
+}
+
+
+mutation($input: DeleteTransactionInput!) {
+  deleteTransaction(input: $input) {
+    message
+    errors
+  }
+}

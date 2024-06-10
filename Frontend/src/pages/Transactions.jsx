@@ -4,6 +4,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import exportTransactions from "../exports/TransactionsExport";
+import { request } from "graphql-request";
+
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -19,29 +21,63 @@ const Transactions = () => {
   });
 
   useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!userId) return; // Don't fetch if userId is null or undefined
+
+      const query = `
+        query GetTransactions($userId: ID!) {
+          user(id: $userId) {
+            transactions {
+              id
+              name
+              amount
+              date
+              description
+              transactionType
+              merchant
+            }
+          }
+        }
+      `;
+
+      const variables = { userId };
+
+      try {
+        const response = await request("http://localhost:3000/graphql", query, variables);
+        setTransactions(response.user.transactions);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        toast.error("Failed to fetch transactions");
+      }
+    };
+
     fetchTransactions();
   }, [userId]);
 
-  const fetchTransactions = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/users/${userId}/transactions`
-      );
-      setTransactions(response.data);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-      toast.error("Failed to fetch transactions");
-    }
-  };
-
   const addTransaction = async (event) => {
     event.preventDefault();
+
+    const mutation = `
+      mutation AddTransaction($input: TransactionInput!) {
+        createTransaction(input: $input) {
+          transaction {
+            id
+            name
+            amount
+            date
+            description
+            transactionType
+            merchant
+          }
+        }
+      }
+    `;
+
+    const variables = { input: newTransaction };
+
     try {
-      const response = await axios.post(
-        `http://localhost:3000/users/${userId}/transactions`,
-        newTransaction
-      );
-      setTransactions([...transactions, response.data]);
+      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      setTransactions([...transactions, response.createTransaction.transaction]);
       setNewTransaction({
         name: "",
         amount: "",
@@ -58,11 +94,19 @@ const Transactions = () => {
   };
 
   const deleteTransaction = async (transactionId) => {
+    const mutation = `
+      mutation DeleteTransaction($id: ID!) {
+        deleteTransaction(id: $id) {
+          message
+        }
+      }
+    `;
+
+    const variables = { id: transactionId };
+
     try {
-      await axios.delete(`http://localhost:3000/users/${userId}/transactions/${transactionId}`);
-      setTransactions(
-        transactions.filter((transaction) => transaction.id !== transactionId)
-      );
+      await request("http://localhost:3000/graphql", mutation, variables);
+      setTransactions(transactions.filter((transaction) => transaction.id !== transactionId));
       toast.success("Transaction deleted successfully!");
     } catch (error) {
       console.error("Error deleting transaction:", error);
