@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from "../context/AuthContext"; // Ensure this path is correct
+import { useAuth } from "../context/AuthContext";
 import exportExpense from "../exports/ExpenseExport";
+import { request } from "graphql-request";
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([]);
-  const [editExpenseId, setEditExpenseId] = useState(null);
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -26,11 +25,28 @@ const Expenses = () => {
   }, [userId]);
 
   const fetchExpenses = async () => {
+    const query = `
+      query GetExpenses($userId: ID!) {
+        user(id: $userId) {
+          expenses {
+            id
+            category
+            vendor
+            date
+            amount
+            purpose
+            receipt
+            reimbursable
+          }
+        }
+      }
+    `;
+
+    const variables = { userId };
+
     try {
-      const response = await axios.get(
-        `http://localhost:3000/users/${userId}/expenses`
-      );
-      setExpenses(response.data);
+      const response = await request("http://localhost:3000/graphql", query, variables);
+      setExpenses(response.user.expenses);
     } catch (error) {
       console.error("Error fetching expenses:", error);
       toast.error("Failed to fetch expenses");
@@ -39,34 +55,36 @@ const Expenses = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    for (const key in newExpense) {
-      formData.append(`expense[${key}]`, newExpense[key]);
-    }
-    if (newExpense.receipt) {
-      formData.append("expense[receipt]", newExpense.receipt);
-    }
-
+  
+    const mutation = `
+      mutation CreateExpense($input: CreateExpenseInput!) {
+        createExpense(input: $input) {
+          expense {
+            id
+            category
+            vendor
+            date
+            amount
+            purpose
+            receipt
+            reimbursable
+          }
+        }
+      }
+    `;
+  
+    const variables = {
+      input: {
+        ...newExpense,
+        amount: parseFloat(newExpense.amount),
+        reimbursable: newExpense.reimbursable === 'Yes' ? true : false,
+        userId: userId // Assuming userId is not null at this point
+      }
+    };
+  
     try {
-      const response = editExpenseId
-        ? await axios.patch(
-            `http://localhost:3000/users/${userId}/expenses/${editExpenseId}`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          )
-        : await axios.post(
-            `http://localhost:3000/users/${userId}/expenses`,
-            formData,
-            { headers: { "Content-Type": "multipart/form-data" } }
-          );
-
-      setExpenses(
-        editExpenseId
-          ? expenses.map((exp) =>
-              exp.id === editExpenseId ? response.data : exp
-            )
-          : [...expenses, response.data]
-      );
+      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      setExpenses([...expenses, response.createExpense.expense]);
       setNewExpense({
         category: "",
         vendor: "",
@@ -76,28 +94,28 @@ const Expenses = () => {
         receipt: null,
         reimbursable: "",
       });
-      setEditExpenseId(null);
-      toast.success(
-        editExpenseId
-          ? "Expense updated successfully!"
-          : "Expense added successfully!"
-      );
+      toast.success("Expense added successfully!");
     } catch (error) {
-      console.error("Failed to save expense:", error.response);
+      console.error("Failed to save expense:", error);
       toast.error("Failed to save expense");
     }
   };
-
-  const handleEdit = (expense) => {
-    setNewExpense({ ...expense, receipt: null });
-    setEditExpenseId(expense.id);
-  };
-
+  
   const handleDelete = async (expenseId) => {
+    const mutation = `
+      mutation DestroyExpense($input: DestroyExpenseInput!) {
+        destroyExpense(input: $input) {
+          message
+        }
+      }
+    `;
+
+    const variables = {
+      input: { id: expenseId, userId: userId }
+    };
+
     try {
-      await axios.delete(
-        `http://localhost:3000/users/${userId}/expenses/${expenseId}`
-      );
+      await request("http://localhost:3000/graphql", mutation, variables);
       setExpenses(expenses.filter((exp) => exp.id !== expenseId));
       toast.success("Expense deleted successfully!");
     } catch (error) {
@@ -138,7 +156,6 @@ const Expenses = () => {
           className="w-full max-w-lg"
         >
           <div className="flex flex-wrap -mx-3 mb-6">
-            {/* Category input */}
             <div className="w-full px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -156,7 +173,6 @@ const Expenses = () => {
                 required
               />
             </div>
-            {/* Vendor input */}
             <div className="w-full px-3">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -174,7 +190,6 @@ const Expenses = () => {
                 required
               />
             </div>
-            {/* Date input */}
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -191,7 +206,6 @@ const Expenses = () => {
                 required
               />
             </div>
-            {/* Amount input */}
             <div className="w-full md:w-1/2 px-3">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -209,7 +223,6 @@ const Expenses = () => {
                 required
               />
             </div>
-            {/* Purpose input */}
             <div className="w-full px-3">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -226,7 +239,6 @@ const Expenses = () => {
                 required
               />
             </div>
-            {/* Receipt input */}
             <div className="w-full px-3 mb-6 md:mb-0">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -241,7 +253,6 @@ const Expenses = () => {
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               />
             </div>
-            {/* Reimbursable input */}
             <div className="w-full px-3">
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -261,19 +272,18 @@ const Expenses = () => {
                 <option value="No">No</option>
               </select>
             </div>
-            {/* Submit button */}
             <div className="w-full px-3 mt-6">
               <button
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
               >
-                {editExpenseId ? "Update Expense" : "Add Expense"}
+                Add Expense
               </button>
             </div>
           </div>
         </form>
       </div>
-
+  
       <div className="mt-8">
         <div className="flex flex-wrap justify-center gap-4">
           {expenses.map((expense) => (
@@ -300,12 +310,6 @@ const Expenses = () => {
                 <strong>Reimbursable:</strong> {expense.reimbursable}
               </p>
               <button
-                onClick={() => handleEdit(expense)}
-                className="text-blue-500 hover:text-blue-700 mr-4"
-              >
-                Edit
-              </button>
-              <button
                 onClick={() => handleDelete(expense.id)}
                 className="text-red-500 hover:text-red-700"
               >
@@ -317,6 +321,7 @@ const Expenses = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Expenses;

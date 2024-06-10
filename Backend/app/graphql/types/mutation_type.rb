@@ -17,5 +17,10 @@ module Types
     # Mutations for Transaction
     field :create_transaction, mutation: Mutations::CreateTransaction
     field :delete_transaction, mutation: Mutations::DeleteTransaction
+
+    # Mutations for Expense
+    field :create_expense, mutation: Mutations::CreateExpense
+    field :destroy_expense, mutation: Mutations::DestroyExpense
+    
   end
 end

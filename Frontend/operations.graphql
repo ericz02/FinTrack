@@ -49,7 +49,7 @@ mutation DestroyBudget($id: ID!) {
   }
 }
 
-mutation($input: CreateTransactionInput!) {
+mutation CreateTransaction($input: CreateTransactionInput!) {
   createTransaction(input: $input) {
     transaction {
       id
@@ -63,10 +63,30 @@ mutation($input: CreateTransactionInput!) {
   }
 }
 
-
-mutation($input: DeleteTransactionInput!) {
+mutation DeleteTransaction($input: DeleteTransactionInput!) {
   deleteTransaction(input: $input) {
     message
     errors
+  }
+}
+
+mutation CreateExpense($input: CreateExpenseInput!) {
+  createExpense(input: $input) {
+    expense {
+      id
+      category
+      vendor
+      date
+      amount
+      purpose
+      receipt
+      reimbursable
+    }
+  }
+}
+
+mutation DestroyExpense($input: DestroyExpenseInput!) {
+  destroyExpense(input: $input) {
+    message
   }
 }

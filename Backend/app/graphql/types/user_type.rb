@@ -6,6 +6,7 @@ module Types
     field :password, String, null: false
     field :bank_accounts, [BankAccountType], null: true
     field :transactions, [TransactionType], null: true
+    field :expenses, [ExpenseType], null: true
 
     def bank_accounts
       object.bank_accounts
@@ -13,6 +14,10 @@ module Types
 
     def transactions
       object.transactions
+    end
+
+    def expenses
+      object.expenses
     end
   end
 end
