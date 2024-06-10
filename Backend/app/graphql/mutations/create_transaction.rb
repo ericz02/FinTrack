@@ -1,4 +1,3 @@
-# app/graphql/mutations/create_transaction.rb
 module Mutations
   class CreateTransaction < Mutations::BaseMutation
     argument :name, String, required: true

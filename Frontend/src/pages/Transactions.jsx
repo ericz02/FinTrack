@@ -56,7 +56,7 @@ const Transactions = () => {
 
   const addTransaction = async (event) => {
     event.preventDefault();
-
+  
     const mutation = `
       mutation AddTransaction($input: TransactionInput!) {
         createTransaction(input: $input) {
@@ -72,9 +72,9 @@ const Transactions = () => {
         }
       }
     `;
-
+  
     const variables = { input: newTransaction };
-
+  
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
       setTransactions([...transactions, response.createTransaction.transaction]);
@@ -94,25 +94,32 @@ const Transactions = () => {
   };
 
   const deleteTransaction = async (transactionId) => {
+    if (!userId) {
+      console.error("User ID is not set.");
+      return;
+    }
+  
     const mutation = `
-      mutation DeleteTransaction($id: ID!) {
-        deleteTransaction(id: $id) {
+      mutation DeleteTransaction($input: DeleteTransactionInput!) {
+        deleteTransaction(input: $input) {
           message
+          errors
         }
       }
     `;
-
-    const variables = { id: transactionId };
-
+    
+    const variables = { input: { id: transactionId, userId: userId } };
+    
     try {
       await request("http://localhost:3000/graphql", mutation, variables);
       setTransactions(transactions.filter((transaction) => transaction.id !== transactionId));
       toast.success("Transaction deleted successfully!");
     } catch (error) {
-      console.error("Error deleting transaction:", error);
+      console.error("Failed to delete transaction:", error);
       toast.error("Failed to delete transaction");
     }
-  };
+  };  
+  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
