@@ -58,7 +58,7 @@ const Transactions = () => {
     event.preventDefault();
   
     const mutation = `
-      mutation AddTransaction($input: TransactionInput!) {
+      mutation AddTransaction($input: CreateTransactionInput!) {
         createTransaction(input: $input) {
           transaction {
             id
@@ -73,7 +73,17 @@ const Transactions = () => {
       }
     `;
   
-    const variables = { input: newTransaction };
+    const variables = {
+      input: {
+        name: newTransaction.name,
+        amount: parseFloat(newTransaction.amount), // Convert amount to float
+        date: newTransaction.date,
+        description: newTransaction.description,
+        transactionType: newTransaction.transaction_type, // Use transactionType instead of transaction_type
+        merchant: newTransaction.merchant,
+        userId: userId // Make sure userId is not null
+      }
+    };
   
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
@@ -92,6 +102,7 @@ const Transactions = () => {
       toast.error("Failed to add transaction");
     }
   };
+  
 
   const deleteTransaction = async (transactionId) => {
     if (!userId) {
