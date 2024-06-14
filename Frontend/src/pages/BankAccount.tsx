@@ -11,10 +11,15 @@ interface BankAccount {
   balance: string;
 }
 
-const BankAccounts: React.FC = () => {
+// const BankAccounts: React.FC = () => {
+interface BankAccountsProps {
+  userId: string;
+}
+
+const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
+
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const { user } = useAuth();
-  const userId = user?.id;
 
   const [newBankAccount, setNewBankAccount] = useState<BankAccount>({
     id: "",
@@ -71,7 +76,7 @@ const BankAccounts: React.FC = () => {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
       setBankAccounts([...bankAccounts, response.addBankAccount]);
       setNewBankAccount({
-        id: "", // Add the 'id' property
+        id: "", 
         account_type: "",
         account_number: "",
         balance: "",
@@ -120,9 +125,6 @@ const BankAccounts: React.FC = () => {
       </h2>
       <div className="flex justify-center">
         <form onSubmit={addBankAccount} className="w-full max-w-lg">
-          {/* Form fields like amount, creditor, and debtor replaced with bank account fields */}
-          {/* You will need to add input fields for each property of the bank account */}
-          {/* Example for account_type */}
           <div className="w-full px-3 mb-6">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -160,8 +162,7 @@ const BankAccounts: React.FC = () => {
           </div>
           <div className="w-full px-3">
             <label
-              className="block uppercase tracking-wide text-gray-700
-              text-xs font-bold mb-2"
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
               htmlFor="balance"
             >
               Account number
@@ -195,7 +196,6 @@ const BankAccounts: React.FC = () => {
               key={account.id}
               className="bg-white rounded-lg shadow-lg p-6 max-w-sm"
             >
-              {/* Display account details */}
               <h3 className="text-lg text-gray-900 font-semibold">
                 Account Number: {account.account_number}
               </h3>

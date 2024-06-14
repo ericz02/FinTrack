@@ -4,7 +4,6 @@ import Plot from "react-plotly.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
-import exportDashboard from "../exports/DashboardExport";
 
 interface FinancialSummary {
   totalDebt: number;
@@ -116,11 +115,14 @@ const Dashboard: React.FC = () => {
   };
 
   const renderExpensesBarChart = () => {
-    const grouped = data.expenses.reduce((acc, { date, amount }) => {
-      const month = new Date(date).getMonth();
-      acc[month] = (acc[month] || 0) + (parseFloat(amount) || 0);
-      return acc;
-    }, {});
+    const grouped = data.expenses.reduce<{ [key: string]: number }>(
+      (acc, { date, amount }) => {
+        const month = new Date(date).getMonth();
+        acc[month] = (acc[month] || 0) + (parseFloat(amount) || 0);
+        return acc;
+      },
+      {}
+    );
 
     const months = Object.keys(grouped).map((month) =>
       new Date(0, parseInt(month)).toLocaleString("default", { month: "long" })
@@ -144,7 +146,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <button
-        onClick={() => exportDashboard(userId)}
+        // onClick={() => exportDashboard(userId)}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Export to Excel

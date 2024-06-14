@@ -4,10 +4,14 @@ import { useAuth } from "../context/AuthContext"; // Adjust the path to your Aut
 import BankAccounts from "./BankAccount";
 import User from "./User";
 
-const Customer: React.FC = () => {
+interface CustomerProps {
+  userId: string;
+}
+
+
+const Customer: React.FC<CustomerProps> = ({ userId }) => {
   const [activeTab, setActiveTab] = useState<string>("profile");
   const { user } = useAuth();
-  const userId: string | undefined = user?.id;
 
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);

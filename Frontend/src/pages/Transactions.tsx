@@ -151,7 +151,7 @@ const Transactions: React.FC = () => {
       <ToastContainer />
       <h2 className="text-center text-2xl font-bold mb-6">Transactions</h2>
       <button
-        onClick={() => exportTransactions(userId)}
+        onClick={() => exportTransactions(userId!)}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Export to Excel

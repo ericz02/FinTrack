@@ -11,10 +11,15 @@ interface Debt {
   debtor: string;
 }
 
-const Debts: React.FC = () => {
+interface DebtsProps {
+  userId: string;
+}
+
+// const Debts: React.FC = () => {
+const Debts: React.FC<DebtsProps> = ({ userId }) => {
+
   const [debts, setDebts] = useState<Debt[]>([]);
   const { user } = useAuth();
-  const userId = user?.id;
 
   const [newDebt, setNewDebt] = useState<Debt>({
     amount: "",
@@ -44,7 +49,7 @@ const Debts: React.FC = () => {
       setDebts([...debts, response.data]);
       setNewDebt({ amount: "", creditor: "", debtor: "", id: "" });
       toast.success("Debt added successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add debt:", error.response);
       toast.error("Failed to add debt");
     }

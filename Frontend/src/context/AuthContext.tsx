@@ -1,7 +1,10 @@
 import { createContext, useContext, useState } from "react";
 import React from "react";
 
+import { ReactNode } from "react";
+
 interface User {
+  name: ReactNode;
   id: string;
   // Add other user properties here
 }

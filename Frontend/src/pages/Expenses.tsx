@@ -164,12 +164,11 @@ const Expenses: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <button
-        onClick={() => exportExpense(userId)}
+      <button onClick={() => userId && exportExpense(userId)}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
+      />
         Export to Excel
-      </button>
+      <button/>
       <ToastContainer />
       <h2 className="text-center text-2xl font-bold mb-6">Manage Expenses</h2>
       <div className="flex justify-center">

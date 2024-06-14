@@ -1,15 +1,25 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",        // path to output directory
-      "sourceMap": true,          // allow sourcemap support
-      "strictNullChecks": true,   // enable strict null checks as a best practice
-      "module": "es6",            // specify module code generation
-      "jsx": "react",             // use typescript to transpile jsx to js
-      "target": "es5",            // specify ECMAScript target version
-      "allowJs": true,             // allow a partial TypeScript and JavaScript codebase
-      "allowSyntheticDefaultImports": true, // allow default imports from modules with no default export
-      "moduleResolution": "node", // specify module resolution strategy
-
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node", "./src/types/type-definition"]
   },
-  "include": ["./src/**/*"]
+  "include": [
+    "src"  // Include all files in the src directory
+  ],
+  "exclude": [
+    "node_modules"  // Exclude node_modules directory
+  ]
 }
