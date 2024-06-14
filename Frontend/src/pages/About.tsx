@@ -1,6 +1,6 @@
 import React from 'react';
 
-const About = () => {
+const About: React.FC = () => {
   return (
     <div className="bg-white h-screen flex flex-col justify-center items-center px-5">
       <h1 className="text-4xl text-[#4a61ff] font-bold text-center mb-6">About FinArc</h1>

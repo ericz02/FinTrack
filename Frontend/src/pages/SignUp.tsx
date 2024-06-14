@@ -3,16 +3,16 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { signupUser } from "../api"; 
+import { signupUser } from "../api";
 
-const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+const SignUp: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignup = async (event) => {
+  const handleSignup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
       const response = await signupUser(name, email, password);

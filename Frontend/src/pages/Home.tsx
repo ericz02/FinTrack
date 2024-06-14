@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from React Router
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div className="relative">
       <img

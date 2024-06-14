@@ -5,19 +5,31 @@ import { useAuth } from "../context/AuthContext";
 import exportExpense from "../exports/ExpenseExport";
 import { request } from "graphql-request";
 
-const Expenses = () => {
-  const [expenses, setExpenses] = useState([]);
+interface Expense {
+  id: string;
+  category: string;
+  vendor: string;
+  date: string;
+  amount: number;
+  purpose: string;
+  receipt: File | null;
+  reimbursable: boolean;
+}
+
+const Expenses: React.FC = () => {
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const { user } = useAuth();
   const userId = user?.id;
 
-  const [newExpense, setNewExpense] = useState({
+  const [newExpense, setNewExpense] = useState<Expense>({
+    id: "", // Add the 'id' property with an empty string value
     category: "",
     vendor: "",
     date: "",
-    amount: "",
+    amount: 0,
     purpose: "",
     receipt: null,
-    reimbursable: "",
+    reimbursable: false,
   });
 
   useEffect(() => {
@@ -45,7 +57,11 @@ const Expenses = () => {
     const variables = { userId };
 
     try {
-      const response = await request("http://localhost:3000/graphql", query, variables);
+      const response = await request(
+        "http://localhost:3000/graphql",
+        query,
+        variables
+      );
       setExpenses(response.user.expenses);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -53,9 +69,9 @@ const Expenses = () => {
     }
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     const mutation = `
       mutation CreateExpense($input: CreateExpenseInput!) {
         createExpense(input: $input) {
@@ -72,27 +88,32 @@ const Expenses = () => {
         }
       }
     `;
-  
+
     const variables = {
       input: {
         ...newExpense,
-        amount: parseFloat(newExpense.amount),
-        reimbursable: newExpense.reimbursable === 'Yes' ? true : false,
-        userId: userId // Assuming userId is not null at this point
-      }
+        amount: newExpense.amount.toString(),
+        reimbursable: newExpense.reimbursable === true,
+        userId: userId, // Assuming userId is not null at this point
+      },
     };
-  
+
     try {
-      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      const response = await request(
+        "http://localhost:3000/graphql",
+        mutation,
+        variables
+      );
       setExpenses([...expenses, response.createExpense.expense]);
       setNewExpense({
+        id: "",
         category: "",
         vendor: "",
         date: "",
-        amount: "",
+        amount: 0,
         purpose: "",
         receipt: null,
-        reimbursable: "",
+        reimbursable: false,
       });
       toast.success("Expense added successfully!");
     } catch (error) {
@@ -100,8 +121,8 @@ const Expenses = () => {
       toast.error("Failed to save expense");
     }
   };
-  
-  const handleDelete = async (expenseId) => {
+
+  const handleDelete = async (expenseId: string) => {
     const mutation = `
       mutation DestroyExpense($input: DestroyExpenseInput!) {
         destroyExpense(input: $input) {
@@ -111,7 +132,7 @@ const Expenses = () => {
     `;
 
     const variables = {
-      input: { id: expenseId, userId: userId }
+      input: { id: expenseId, userId: userId },
     };
 
     try {
@@ -124,7 +145,9 @@ const Expenses = () => {
     }
   };
 
-  const handleChange = (event) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = event.target;
     setNewExpense((prev) => ({
       ...prev,
@@ -132,10 +155,10 @@ const Expenses = () => {
     }));
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewExpense((prev) => ({
       ...prev,
-      receipt: event.target.files[0],
+      receipt: event.target.files ? event.target.files[0] : null,
     }));
   };
 
@@ -190,7 +213,10 @@ const Expenses = () => {
                 required
               />
             </div>
-            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <div
+              className="w-full md:w-1/2 px-
+3 mb-6 md:mb-0"
+            >
               <label
                 className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                 htmlFor="date"
@@ -262,8 +288,10 @@ const Expenses = () => {
               </label>
               <select
                 name="reimbursable"
-                value={newExpense.reimbursable}
-                onChange={handleChange}
+                value={newExpense.reimbursable.toString()}
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+                  handleChange(event)
+                }
                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 required
               >
@@ -283,7 +311,7 @@ const Expenses = () => {
           </div>
         </form>
       </div>
-  
+
       <div className="mt-8">
         <div className="flex flex-wrap justify-center gap-4">
           {expenses.map((expense) => (
@@ -321,7 +349,6 @@ const Expenses = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Expenses;

@@ -3,7 +3,51 @@ import { GraphQLClient, gql } from 'graphql-request';
 const endpoint = 'http://localhost:3000/graphql';
 const client = new GraphQLClient(endpoint);
 
-export const signupUser = async (name, email, password) => {
+interface SignupResponse {
+  createUser: {
+    user: {
+      id: string;
+      name: string;
+      email: string;
+    };
+    errors: string[];
+  };
+}
+
+interface CreateBankAccountInput {
+  accountType: string;
+  accountNumber: string;
+  balance: number;
+  interestRate: number;
+  currency: string;
+  openingDate: string;
+  status: string;
+  branchCode: string;
+  overdraftProtection: boolean;
+}
+
+interface CreateBankAccountResponse {
+  createBankAccount: {
+    bankAccount: {
+      id: string;
+      accountType: string;
+      accountNumber: string;
+      balance: number;
+      interestRate: number;
+      currency: string;
+      openingDate: string;
+      status: string;
+      branchCode: string;
+      overdraftProtection: boolean;
+    };
+  };
+}
+
+interface DeleteBankAccountResponse {
+  deleteBankAccount: boolean;
+}
+
+export const signupUser = async (name: string, email: string, password: string): Promise<SignupResponse['createUser']> => {
   const mutation = gql`
     mutation Signup($name: String!, $email: String!, $password: String!) {
       createUser(input: { name: $name, email: $email, password: $password }) {
@@ -17,11 +61,11 @@ export const signupUser = async (name, email, password) => {
     }
   `;
   const variables = { name, email, password };
-  const data = await client.request(mutation, variables);
+  const data = await client.request<SignupResponse>(mutation, variables);
   return data.createUser;
 };
 
-export const createBankAccount = async (input) => {
+export const createBankAccount = async (input: CreateBankAccountInput): Promise<CreateBankAccountResponse['createBankAccount']> => {
   const mutation = gql`
     mutation CreateBankAccount($input: CreateBankAccountInput!) {
       createBankAccount(input: $input) {
@@ -41,17 +85,17 @@ export const createBankAccount = async (input) => {
     }
   `;
   const variables = { input };
-  const data = await client.request(mutation, variables);
+  const data = await client.request<CreateBankAccountResponse>(mutation, variables);
   return data.createBankAccount;
 };
 
-export const deleteBankAccount = async (bankAccountId) => {
+export const deleteBankAccount = async (bankAccountId: string): Promise<boolean> => {
   const mutation = gql`
     mutation DeleteBankAccount($bankAccountId: ID!) {
       deleteBankAccount(id: $bankAccountId)
     }
   `;
   const variables = { bankAccountId };
-  const data = await client.request(mutation, variables);
+  const data = await client.request<DeleteBankAccountResponse>(mutation, variables);
   return data.deleteBankAccount;
 };

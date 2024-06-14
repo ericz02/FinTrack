@@ -3,8 +3,17 @@ import { request } from "graphql-request";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Budgets = () => {
-  const [budgets, setBudgets] = useState([]);
+interface Budget {
+  id: string;
+  name: string;
+  savingsGoal: number;
+  totalIncome: number;
+  totalExpenses: number;
+  status: string;
+}
+
+const Budgets: React.FC = () => {
+  const [budgets, setBudgets] = useState<Budget[]>([]);
   const [newBudgetName, setNewBudgetName] = useState("");
   const [newBudgetSavingsGoal, setNewBudgetSavingsGoal] = useState("");
   const [newBudgetTotalIncome, setNewBudgetTotalIncome] = useState("");
@@ -81,7 +90,7 @@ const Budgets = () => {
     }
   };
   
-  const handleDeleteBudget = async (id) => {
+  const handleDeleteBudget = async (id: string) => {
     const mutation = `
     mutation DeleteBudget($input: DestroyBudgetInput!) {
       destroyBudget(input: $input) {

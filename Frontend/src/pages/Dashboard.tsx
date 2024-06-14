@@ -6,11 +6,34 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import exportDashboard from "../exports/DashboardExport";
 
-const Dashboard = () => {
+interface FinancialSummary {
+  totalDebt: number;
+  totalSavings: number;
+  totalExpenses: number;
+  totalTransaction: number;
+  TotalBankBalance: number;
+}
+
+interface Expense {
+  id: string;
+  amount: string;
+  category: string;
+  date: string;
+}
+
+interface DashboardData extends FinancialSummary {
+  transactions: any[];
+  expenses: Expense[];
+  bankAccounts: any[];
+  debts: any[];
+  netWorth: number;
+}
+
+const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const userId = user?.id;
 
-  const [data, setData] = useState({
+  const [data, setData] = useState<DashboardData>({
     transactions: [],
     expenses: [],
     bankAccounts: [],
@@ -27,19 +50,34 @@ const Dashboard = () => {
     if (!userId) return;
 
     const fetchData = async () => {
+      interface DashboardData extends FinancialSummary {
+        transactions: any[];
+        expenses: Expense[];
+        bankAccounts: any[];
+        debts: any[];
+        netWorth: number;
+        totalDebt: number;
+        totalSavings: number;
+        totalExpenses: number;
+        totalTransaction: number;
+        TotalBankBalance: number;
+        financial_summary: FinancialSummary;
+      }
+
       try {
-        const response = await axios.get(
+        const response = await axios.get<DashboardData>(
           `http://localhost:3000/users/${userId}/dashboard`
         );
-        setData({
+        setData((prevData) => ({
+          ...prevData,
           ...response.data.financial_summary,
-          netWorth: response.data.net_worth,
-          totalDebt: response.data.total_debt,
-          totalSavings: response.data.total_savings,
-          totalExpenses: response.data.total_expenses,
-          totalTransaction: response.data.total_transcations,
-          TotalBankBalance: response.data.total_bank_balance,
-        });
+          netWorth: response.data.netWorth,
+          totalDebt: response.data.totalDebt,
+          totalSavings: response.data.totalSavings,
+          totalExpenses: response.data.totalExpenses,
+          totalTransaction: response.data.totalTransaction,
+          TotalBankBalance: response.data.TotalBankBalance,
+        }));
         console.debug(response.data);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -50,7 +88,7 @@ const Dashboard = () => {
     fetchData();
   }, [userId]);
 
-  const formatCurrency = (value) => {
+  const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -85,7 +123,7 @@ const Dashboard = () => {
     }, {});
 
     const months = Object.keys(grouped).map((month) =>
-      new Date(0, month).toLocaleString("default", { month: "long" })
+      new Date(0, parseInt(month)).toLocaleString("default", { month: "long" })
     );
     const amounts = Object.values(grouped);
 
