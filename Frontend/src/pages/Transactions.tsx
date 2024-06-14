@@ -66,7 +66,14 @@ const Transactions: React.FC = () => {
 
   const addTransaction = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
+    const amount = parseFloat(String(newTransaction.amount)); // Convert amount to float
+  
+    if (isNaN(amount)) {
+      toast.error("Amount must be a valid number");
+      return;
+    }
+  
     const mutation = `
       mutation AddTransaction($input: CreateTransactionInput!) {
         createTransaction(input: $input) {
@@ -82,11 +89,11 @@ const Transactions: React.FC = () => {
         }
       }
     `;
-
+  
     const variables = {
       input: {
         name: newTransaction.name,
-        amount: newTransaction.amount.toString(), // Convert the amount to a string
+        amount: amount, // Use the converted amount
         date: newTransaction.date,
         description: newTransaction.description,
         transactionType: newTransaction.transactionType,
@@ -94,7 +101,7 @@ const Transactions: React.FC = () => {
         userId: userId,
       },
     };
-
+  
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
       setTransactions([...transactions, response.createTransaction.transaction]);
@@ -113,6 +120,7 @@ const Transactions: React.FC = () => {
       toast.error("Failed to add transaction");
     }
   };
+  
 
   const deleteTransaction = async (transactionId: string) => {
     if (!userId) {
