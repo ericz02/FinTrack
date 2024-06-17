@@ -144,18 +144,17 @@ const BankAccounts: React.FC = () => {
     }
   };
   
-
   const deleteBankAccount = async (bankAccountId: string) => {
     const mutation = `
       mutation DeleteBankAccount($id: ID!) {
-        deleteBankAccount(id: $id) {
-          id
+        destroyBankAccount(input: { id: $id }) {
+          clientMutationId
         }
       }
     `;
-
+  
     const variables = { id: bankAccountId };
-
+  
     try {
       await request("http://localhost:3000/graphql", mutation, variables);
       setBankAccounts(bankAccounts.filter((account) => account.id !== bankAccountId));
@@ -165,6 +164,7 @@ const BankAccounts: React.FC = () => {
       toast.error("Failed to delete bank account");
     }
   };
+  
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
