@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
-import exportExpense from "../exports/ExpenseExport";
 import { request } from "graphql-request";
 
 interface Expense {
@@ -22,7 +21,7 @@ const Expenses: React.FC = () => {
   const userId = user?.id;
 
   const [newExpense, setNewExpense] = useState<Expense>({
-    id: "", // Add the 'id' property with an empty string value
+    id: "",
     category: "",
     vendor: "",
     date: "",
@@ -57,11 +56,7 @@ const Expenses: React.FC = () => {
     const variables = { userId };
 
     try {
-      const response = await request(
-        "http://localhost:3000/graphql",
-        query,
-        variables
-      );
+      const response = await request("http://localhost:3000/graphql", query, variables);
       setExpenses(response.user.expenses);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -71,7 +66,7 @@ const Expenses: React.FC = () => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
     const mutation = `
       mutation CreateExpense($input: CreateExpenseInput!) {
         createExpense(input: $input) {
@@ -88,22 +83,19 @@ const Expenses: React.FC = () => {
         }
       }
     `;
-
+  
     const variables = {
       input: {
         ...newExpense,
-        amount: newExpense.amount.toString(),
-        reimbursable: newExpense.reimbursable === true,
-        userId: userId, // Assuming userId is not null at this point
+        id: undefined,
+        amount: parseFloat(String(newExpense.amount)), // Convert amount to float
+        reimbursable: newExpense.reimbursable === "Yes" ? true : false, // Explicitly check for "Yes" and convert to boolean
+        userId: userId!,
       },
     };
-
+  
     try {
-      const response = await request(
-        "http://localhost:3000/graphql",
-        mutation,
-        variables
-      );
+      const response = await request("http://localhost:3000/graphql", mutation, variables);
       setExpenses([...expenses, response.createExpense.expense]);
       setNewExpense({
         id: "",
@@ -121,6 +113,7 @@ const Expenses: React.FC = () => {
       toast.error("Failed to save expense");
     }
   };
+  
 
   const handleDelete = async (expenseId: string) => {
     const mutation = `
@@ -132,7 +125,7 @@ const Expenses: React.FC = () => {
     `;
 
     const variables = {
-      input: { id: expenseId, userId: userId },
+      input: { id: expenseId, userId: userId! },
     };
 
     try {
@@ -164,11 +157,6 @@ const Expenses: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <button onClick={() => userId && exportExpense(userId)}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      />
-        Export to Excel
-      <button/>
       <ToastContainer />
       <h2 className="text-center text-2xl font-bold mb-6">Manage Expenses</h2>
       <div className="flex justify-center">

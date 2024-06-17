@@ -9,38 +9,52 @@ interface BankAccount {
   account_type: string;
   account_number: string;
   balance: string;
+  interest_rate?: string | Number | null;
+  currency?: string;
+  opening_date?: string;
+  status?: string;
+  branch_code?: string;
+  overdraft_protection?: string;
 }
 
-// const BankAccounts: React.FC = () => {
-interface BankAccountsProps {
-  userId: string;
-}
-
-const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
-
+const BankAccounts: React.FC = () => {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const { user } = useAuth();
-
+  const userId = user?.id;
   const [newBankAccount, setNewBankAccount] = useState<BankAccount>({
     id: "",
     account_type: "",
     account_number: "",
     balance: "",
+    interest_rate: 0.01,
+    currency: "",
+    opening_date: "",
+    status: "",
+    branch_code: "",
+    overdraft_protection: "",
   });
 
   useEffect(() => {
     const fetchBankAccounts = async () => {
+      if (!userId) return;
+
       const query = `
-      query GetBankAccounts($userId: ID!) {
-        user(id: $userId) {
-          bankAccounts {
-            id
-            account_type
-            account_number
-            balance
+        query GetBankAccounts($userId: ID!) {
+          user(id: $userId) {
+            bankAccounts {
+              id
+              accountType
+              accountNumber
+              balance
+              interestRate
+              currency
+              openingDate
+              status
+              branchCode
+              overdraftProtection
+            }
           }
         }
-      }
       `;
 
       const variables = { userId };
@@ -56,37 +70,71 @@ const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
 
     fetchBankAccounts();
   }, [userId]);
-
-  const addBankAccount = async (event: React.FormEvent<HTMLFormElement>) => {
+  const addBankAccount = async (event: React.FormEvent) => {
     event.preventDefault();
+  
+    const balance = parseFloat(newBankAccount.balance);
+    if (isNaN(balance)) {
+      toast.error("Balance must be a valid number");
+      return;
+    }
+  
     const mutation = `
-      mutation AddBankAccount($bankAccount: BankAccountInput!) {
-        addBankAccount(bankAccount: $bankAccount) {
-          id
-          account_type
-          account_number
-          balance
+      mutation createBankAccount($bankAccountInput: CreateBankAccountInput!) {
+        createBankAccount(input: $bankAccountInput) {
+          bankAccount {
+            id
+            accountType
+            accountNumber
+            balance
+            interestRate
+            currency
+            openingDate
+            status
+            branchCode
+            overdraftProtection
+          }
+          errors
         }
       }
     `;
-
-    const variables = { bankAccount: newBankAccount };
-
+  
+    const variables = {
+      bankAccountInput: {
+        userId: userId,
+        accountType: newBankAccount.account_type,
+        accountNumber: newBankAccount.account_number,
+        balance: balance,
+      }
+    };
+  
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
-      setBankAccounts([...bankAccounts, response.addBankAccount]);
-      setNewBankAccount({
-        id: "", 
-        account_type: "",
-        account_number: "",
-        balance: "",
-      });
-      toast.success("Bank account added successfully!");
+      if (response.createBankAccount.errors.length === 0) {
+        setBankAccounts([...bankAccounts, response.createBankAccount.bankAccount]);
+        setNewBankAccount({
+          id: "",
+          account_type: "",
+          account_number: "",
+          balance: "",
+          interest_rate: 0.01,
+          currency: "",
+          opening_date: "",
+          status: "",
+          branch_code: "",
+          overdraft_protection: "",
+        });
+        toast.success("Bank account added successfully!");
+      } else {
+        toast.error("Failed to add bank account: " + response.createBankAccount.errors.join(", "));
+      }
     } catch (error) {
       console.error("Failed to add bank account:", error);
       toast.error("Failed to add bank account");
     }
   };
+  
+  
 
   const deleteBankAccount = async (bankAccountId: string) => {
     const mutation = `
@@ -101,7 +149,11 @@ const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
 
     try {
       await request("http://localhost:3000/graphql", mutation, variables);
-      setBankAccounts(bankAccounts.filter((account) => account.id !== bankAccountId));
+      setBankAccounts(
+        bankAccounts.filter(
+          (account: BankAccount) => account.id !== bankAccountId
+        )
+      );
       toast.success("Bank account deleted successfully!");
     } catch (error) {
       console.error("Failed to delete bank account:", error);
@@ -162,7 +214,8 @@ const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
           </div>
           <div className="w-full px-3">
             <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              className="block uppercase tracking-wide text-gray-700
+              text-xs font-bold mb-2"
               htmlFor="balance"
             >
               Account number
