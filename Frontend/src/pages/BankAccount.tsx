@@ -17,10 +17,12 @@ interface BankAccount {
   overdraft_protection?: string;
 }
 
-const BankAccounts: React.FC = () => {
+interface BankAccountsProps {
+  userId: string;
+}
+
+const BankAccounts: React.FC<BankAccountsProps> = ({ userId }) => {
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
-  const { user } = useAuth();
-  const userId = user?.id;
   const [newBankAccount, setNewBankAccount] = useState<BankAccount>({
     id: "",
     account_type: "",
@@ -70,15 +72,16 @@ const BankAccounts: React.FC = () => {
 
     fetchBankAccounts();
   }, [userId]);
+
   const addBankAccount = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     const balance = parseFloat(newBankAccount.balance);
     if (isNaN(balance)) {
       toast.error("Balance must be a valid number");
       return;
     }
-  
+
     const mutation = `
       mutation createBankAccount($bankAccountInput: CreateBankAccountInput!) {
         createBankAccount(input: $bankAccountInput) {
@@ -98,7 +101,7 @@ const BankAccounts: React.FC = () => {
         }
       }
     `;
-  
+
     const variables = {
       bankAccountInput: {
         userId: userId,
@@ -107,7 +110,7 @@ const BankAccounts: React.FC = () => {
         balance: balance,
       }
     };
-  
+
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
       if (response.createBankAccount.errors.length === 0) {
@@ -133,8 +136,6 @@ const BankAccounts: React.FC = () => {
       toast.error("Failed to add bank account");
     }
   };
-  
-  
 
   const deleteBankAccount = async (bankAccountId: string) => {
     const mutation = `

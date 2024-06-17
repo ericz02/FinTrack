@@ -12,7 +12,7 @@ interface Expense {
   amount: number;
   purpose: string;
   receipt: File | null;
-  reimbursable: boolean;
+  reimbursable: boolean | string;
 }
 
 const Expenses: React.FC = () => {
