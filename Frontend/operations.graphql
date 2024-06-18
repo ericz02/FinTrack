@@ -1,0 +1,92 @@
+mutation CreateUser($userInput: CreateUserInput!, $bankAccountInput: CreateBankAccountInput!) {
+  createUser(input: $userInput) {
+    user {
+      id
+      name
+      email
+    }
+  }
+
+  createBankAccount(input: $bankAccountInput) {
+    bankAccount {
+      id
+      accountType
+      accountNumber
+      balance
+      interestRate
+      currency
+      openingDate
+      status
+      branchCode
+      overdraftProtection
+    }
+  }
+}
+
+mutation CreateBudget($input: CreateBudgetInput!) {
+  createBudget(input: $input) {
+    id
+    name
+    savingsGoal
+    totalIncome
+    totalExpenses
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+mutation DestroyBudget($id: ID!) {
+  destroyBudget(input: { id: $id }) {
+    id
+    name
+    savingsGoal
+    totalIncome
+    totalExpenses
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateTransaction($input: CreateTransactionInput!) {
+  createTransaction(input: $input) {
+    transaction {
+      id
+      name
+      amount
+      date
+      description
+      transactionType
+      merchant
+    }
+  }
+}
+
+mutation DeleteTransaction($input: DeleteTransactionInput!) {
+  deleteTransaction(input: $input) {
+    message
+    errors
+  }
+}
+
+mutation CreateExpense($input: CreateExpenseInput!) {
+  createExpense(input: $input) {
+    expense {
+      id
+      category
+      vendor
+      date
+      amount
+      purpose
+      receipt
+      reimbursable
+    }
+  }
+}
+
+mutation DestroyExpense($input: DestroyExpenseInput!) {
+  destroyExpense(input: $input) {
+    message
+  }
+}

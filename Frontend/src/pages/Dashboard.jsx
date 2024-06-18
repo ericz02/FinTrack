@@ -3,7 +3,7 @@ import axios from "axios";
 import Plot from "react-plotly.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from "../context/AuthContext"; // Ensure this path is correct
+import { useAuth } from "../context/AuthContext";
 import exportDashboard from "../exports/DashboardExport";
 
 const Dashboard = () => {
@@ -18,6 +18,9 @@ const Dashboard = () => {
     netWorth: 0,
     totalDebt: 0,
     totalSavings: 0,
+    totalExpenses: 0,
+    totalTransaction: 0,
+    TotalBankBalance: 0,
   });
 
   useEffect(() => {
@@ -35,7 +38,6 @@ const Dashboard = () => {
           totalSavings: response.data.total_savings,
           totalExpenses: response.data.total_expenses,
           totalTransaction: response.data.total_transcations,
-          totalSavings: response.data.total_savings,
           TotalBankBalance: response.data.total_bank_balance,
         });
         console.debug(response.data);
