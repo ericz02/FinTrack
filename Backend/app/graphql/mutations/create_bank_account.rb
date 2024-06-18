@@ -4,7 +4,7 @@ module Mutations
     argument :account_type, String, required: true
     argument :account_number, String, required: true
     argument :balance, Float, required: true
-    argument :interest_rate, Float, required: true
+    argument :interest_rate, Float, required: false
     argument :currency, String, required: true
     argument :opening_date, String, required: true
     argument :status, String, required: true

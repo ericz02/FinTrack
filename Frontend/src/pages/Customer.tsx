@@ -4,12 +4,16 @@ import { useAuth } from "../context/AuthContext"; // Adjust the path to your Aut
 import BankAccounts from "./BankAccount";
 import User from "./User";
 
-const Customer = () => {
-  const [activeTab, setActiveTab] = useState("profile");
-  const { user } = useAuth();
-  const userId = user?.id;
+interface CustomerProps {
+  userId: string;
+}
 
-  const handleTabClick = (tabName) => {
+
+const Customer: React.FC<CustomerProps> = ({ userId }) => {
+  const [activeTab, setActiveTab] = useState<string>("profile");
+  const { user } = useAuth();
+
+  const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
   };
 
@@ -54,20 +58,19 @@ const Customer = () => {
       {activeTab === "profile" && (
         <div className="mt-4">
           <h2 className="text-xl font-bold">Profile Information</h2>
-          <User userId={userId} />{" "}
+          <User userId={userId} />
         </div>
       )}
 
       {activeTab === "debts" && (
         <div className="mt-4">
-          <Debts userId={userId} />{" "}
-          {/* This assumes Debts component handles edits */}
+          <Debts userId={userId} />
         </div>
       )}
       
       {activeTab === "account" && (
         <div className="mt-4">
-          <BankAccounts userId={userId} />{" "}
+          <BankAccounts userId={userId} />
         </div>
       )}
     </div>

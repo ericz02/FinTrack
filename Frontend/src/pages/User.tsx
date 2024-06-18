@@ -4,16 +4,25 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 
-const User = () => {
-  const { user } = useAuth();
-  const userId = user?.id;
+interface UserData {
+  name: string;
+  email: string;
+  address?: string;
+  phone_number?: string;
+  gender?: string;
+}
 
-  const [userData, setUserData] = useState(null);
+interface UserProps {
+  userId: string | undefined;
+}
+
+const User: React.FC<UserProps> = ({ userId, }) => {
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/users/${userId}`);
+        const response = await axios.get<UserData>(`http://localhost:3000/users/${userId}`);
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);

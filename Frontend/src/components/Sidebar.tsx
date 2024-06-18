@@ -1,3 +1,5 @@
+// src/components/Sidebar.tsx
+import React from "react";
 import { Link } from "react-router-dom";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
@@ -8,7 +10,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   return (
     <div className="sidebar bg-[#4a61ff] text-neutral-100 flex flex-col h-screen">
       <div className="p-20 flex-grow">

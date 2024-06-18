@@ -1,24 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 
-const Debts = () => {
-  const [debts, setDebts] = useState([]);
-  const { user } = useAuth();
-  const userId = user?.id;
+interface Debt {
+  id: string;
+  amount: string;
+  creditor: string;
+  debtor: string;
+}
 
-  const [newDebt, setNewDebt] = useState({
+interface DebtsProps {
+  userId: string;
+}
+
+// const Debts: React.FC = () => {
+const Debts: React.FC<DebtsProps> = ({ userId }) => {
+
+  const [debts, setDebts] = useState<Debt[]>([]);
+  const { user } = useAuth();
+
+  const [newDebt, setNewDebt] = useState<Debt>({
     amount: "",
     creditor: "",
-    debtor: ""
+    debtor: "",
+    id: ""
   });
 
   useEffect(() => {
     const fetchDebts = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/users/${userId}/debts`);
+        const response = await axios.get<Debt[]>(`http://localhost:3000/users/${userId}/debts`);
         setDebts(response.data);
       } catch (error) {
         console.error("Error fetching debts:", error);
@@ -29,20 +42,20 @@ const Debts = () => {
     fetchDebts();
   }, [userId]);
 
-  const addDebt = async (event) => {
+  const addDebt = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:3000/users/${userId}/debts`, { debt: newDebt });
+      const response = await axios.post<Debt>(`http://localhost:3000/users/${userId}/debts`, { debt: newDebt });
       setDebts([...debts, response.data]);
-      setNewDebt({ amount: "", creditor: "", debtor: "" });
+      setNewDebt({ amount: "", creditor: "", debtor: "", id: "" });
       toast.success("Debt added successfully!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to add debt:", error.response);
       toast.error("Failed to add debt");
     }
   };
 
-  const deleteDebt = async (debtId) => {
+  const deleteDebt = async (debtId: string) => {
     try {
       await axios.delete(`http://localhost:3000/users/${userId}/debts/${debtId}`);
       setDebts(debts.filter(debt => debt.id !== debtId));
@@ -53,7 +66,7 @@ const Debts = () => {
     }
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setNewDebt(prev => ({
       ...prev,

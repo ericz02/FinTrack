@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const exportExpense = async (userId) => {
+const exportExpense = async (userId: string) => {
   try {
     const response = await axios({
       url: `http://localhost:3000/users/${userId}/expenses/export`,
@@ -19,7 +19,7 @@ const exportExpense = async (userId) => {
     link.setAttribute("download", "Expenses.xlsx"); // Name the file
     document.body.appendChild(link);
     link.click();
-    link.parentNode.removeChild(link);
+    document.body.removeChild(link); // Remove the link from the body after download
     toast.success("Expenses exported successfully!");
   } catch (error) {
     console.error("Error downloading the file:", error);

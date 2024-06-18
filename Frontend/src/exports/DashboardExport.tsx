@@ -1,10 +1,10 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const exportTransactions = async (userId) => {
+const exportDashboard = async (userId: string) => {
   try {
     const response = await axios({
-      url: `http://localhost:3000/users/${userId}/transactions/export`,
+      url: `http://localhost:3000/users/${userId}/dashboard/export`,
       method: "GET",
       responseType: "blob",
     });
@@ -16,15 +16,15 @@ const exportTransactions = async (userId) => {
     const fileURL = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = fileURL;
-    link.setAttribute("download", "Transactions.xlsx"); // Name the file
+    link.setAttribute("download", "Dashboard.xlsx"); // Name the file
     document.body.appendChild(link);
     link.click();
-    link.parentNode.removeChild(link);
-    toast.success("Transactions exported successfully!");
+    document.body.removeChild(link); // Remove the link from the body after download
+    toast.success("Dashboard exported successfully!");
   } catch (error) {
     console.error("Error downloading the file:", error);
-    toast.error("Failed to download transactions");
+    toast.error("Failed to download Dashboard");
   }
 };
 
-export default exportTransactions;
+export default exportDashboard;

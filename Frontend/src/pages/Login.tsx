@@ -5,18 +5,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/login", {
+      const response = await axios.post<{ user: { id: string; email: string; name: string } }>("http://localhost:3000/login", {
         email: email,
         password: password,
       });
@@ -25,8 +24,8 @@ const Login = () => {
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (error) {
-      if (error.response) {
-        setError(error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.message || "Login failed. Please try again later.");
       } else {
         setError("Login failed. Please try again later.");
       }

@@ -1,15 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
 import { request } from "graphql-request";
 
-const BankAccounts = () => {
-  const [bankAccounts, setBankAccounts] = useState([]);
+interface BankAccount {
+  id: string;
+  account_type: string;
+  account_number: string;
+  balance: string;
+  interest_rate: string;
+  currency: string;
+  opening_date: string;
+  status: string;
+  branch_code: string;
+  overdraft_protection: string;
+}
+
+const BankAccounts: React.FC = () => {
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
   const { user } = useAuth();
   const userId = user?.id;
 
-  const [newBankAccount, setNewBankAccount] = useState({
+  const [newBankAccount, setNewBankAccount] = useState<Omit<BankAccount, 'id'>>({
     account_type: "",
     account_number: "",
     balance: "",
@@ -56,59 +69,92 @@ const BankAccounts = () => {
     fetchBankAccounts();
   }, [userId]);
 
-  const addBankAccount = async (event) => {
+  const addBankAccount = async (event: React.FormEvent) => {
     event.preventDefault();
+  
+    const balance = parseFloat(newBankAccount.balance); // Convert balance to float
+  
+    if (isNaN(balance)) {
+      toast.error("Balance must be a valid number");
+      return;
+    }
+  
     const mutation = `
-      mutation AddBankAccount($bankAccount: BankAccountInput!) {
-        addBankAccount(bankAccount: $bankAccount) {
-          id
-          account_type
-          account_number
-          balance
-          interest_rate
-          currency
-          opening_date
-          status
-          branch_code
-          overdraft_protection
+      mutation createBankAccount($bankAccountInput: CreateBankAccountInput!) {
+        createBankAccount(input: $bankAccountInput) {
+          bankAccount {
+            id
+            accountType
+            accountNumber
+            balance
+            interestRate
+            currency
+            openingDate
+            status
+            branchCode
+            overdraftProtection
+          }
+          errors
         }
       }
     `;
+  
+    const variables = {
+      bankAccountInput: {
+        userId: userId,
+        accountType: newBankAccount.account_type,
+        accountNumber: newBankAccount.account_number,
+        balance: balance,
+        interestRate: parseFloat(newBankAccount.interest_rate ?? "0.01"),
+        currency: newBankAccount.currency,
+        openingDate: newBankAccount.opening_date,
+        status: newBankAccount.status,
+        branchCode: newBankAccount.branch_code,
+        overdraftProtection: newBankAccount.overdraft_protection,
+      }
+    };
 
-    const variables = { bankAccount: newBankAccount };
-
+  
     try {
-      const response = await request("http://localhost:3000/graphql", mutation, variables);
-      setBankAccounts([...bankAccounts, response.addBankAccount]);
-      setNewBankAccount({
-        account_type: "",
-        account_number: "",
-        balance: "",
-        interest_rate: "",
-        currency: "",
-        opening_date: "",
-        status: "",
-        branch_code: "",
-        overdraft_protection: "",
-      });
-      toast.success("Bank account added successfully!");
+      const response = await request(
+        "http://localhost:3000/graphql",
+        mutation,
+        variables
+      );
+      if (response.createBankAccount.errors.length === 0) {
+        setBankAccounts([...bankAccounts, response.createBankAccount.bankAccount]);
+        setNewBankAccount({
+          account_type: "",
+          account_number: "",
+          balance: "",
+          interest_rate: "",
+          currency: "",
+          opening_date: "",
+          status: "",
+          branch_code: "",
+          overdraft_protection: "",
+        });
+        toast.success("Bank account added successfully!");
+      } else {
+        toast.error("Failed to add bank account: " + response.createBankAccount.errors.join(", "));
+      }
     } catch (error) {
       console.error("Failed to add bank account:", error);
       toast.error("Failed to add bank account");
     }
   };
-
-  const deleteBankAccount = async (bankAccountId) => {
+  
+  const deleteBankAccount = async (bankAccountId: string) => {
     const mutation = `
       mutation DeleteBankAccount($id: ID!) {
-        deleteBankAccount(id: $id) {
-          id
+        destroyBankAccount(input: { id: $id }) {
+          clientMutationId
         }
       }
     `;
-
+  
     const variables = { id: bankAccountId };
-
+  
     try {
       await request("http://localhost:3000/graphql", mutation, variables);
       setBankAccounts(bankAccounts.filter((account) => account.id !== bankAccountId));
@@ -118,8 +164,9 @@ const BankAccounts = () => {
       toast.error("Failed to delete bank account");
     }
   };
+  
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setNewBankAccount((prev) => ({
       ...prev,
@@ -135,9 +182,6 @@ const BankAccounts = () => {
       </h2>
       <div className="flex justify-center">
         <form onSubmit={addBankAccount} className="w-full max-w-lg">
-          {/* Form fields like amount, creditor, and debtor replaced with bank account fields */}
-          {/* You will need to add input fields for each property of the bank account */}
-          {/* Example for account_type */}
           <div className="w-full px-3 mb-6">
             <label
               className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -177,9 +221,9 @@ const BankAccounts = () => {
             <label
               className="block uppercase tracking-wide text-gray-700
               text-xs font-bold mb-2"
-              htmlFor="balance"
+              htmlFor="account_number"
             >
-              Account number
+              Account Number
             </label>
             <input
               type="text"
@@ -210,7 +254,6 @@ const BankAccounts = () => {
               key={account.id}
               className="bg-white rounded-lg shadow-lg p-6 max-w-sm"
             >
-              {/* Display account details */}
               <h3 className="text-lg text-gray-900 font-semibold">
                 Account Number: {account.account_number}
               </h3>

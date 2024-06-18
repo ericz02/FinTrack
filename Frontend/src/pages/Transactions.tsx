@@ -6,23 +6,33 @@ import { useAuth } from "../context/AuthContext";
 import exportTransactions from "../exports/TransactionsExport";
 import { request } from "graphql-request";
 
+interface Transaction {
+  id: string;
+  name: string;
+  amount: number;
+  date: string;
+  description: string;
+  transactionType: string;
+  merchant: string;
+}
 
-const Transactions = () => {
-  const [transactions, setTransactions] = useState([]);
+const Transactions: React.FC = () => {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { user } = useAuth();
   const userId = user?.id;
-  const [newTransaction, setNewTransaction] = useState({
+  const [newTransaction, setNewTransaction] = useState<Transaction>({
+    id: "",
     name: "",
-    amount: "",
+    amount: 0,
     date: "",
     description: "",
-    transaction_type: "",
+    transactionType: "",
     merchant: "",
   });
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      if (!userId) return; // Don't fetch if userId is null or undefined
+      if (!userId) return;
 
       const query = `
         query GetTransactions($userId: ID!) {
@@ -54,8 +64,15 @@ const Transactions = () => {
     fetchTransactions();
   }, [userId]);
 
-  const addTransaction = async (event) => {
+  const addTransaction = async (event: React.FormEvent) => {
     event.preventDefault();
+  
+    const amount = parseFloat(String(newTransaction.amount)); // Convert amount to float
+  
+    if (isNaN(amount)) {
+      toast.error("Amount must be a valid number");
+      return;
+    }
   
     const mutation = `
       mutation AddTransaction($input: CreateTransactionInput!) {
@@ -76,24 +93,25 @@ const Transactions = () => {
     const variables = {
       input: {
         name: newTransaction.name,
-        amount: parseFloat(newTransaction.amount), // Convert amount to float
+        amount: amount, // Use the converted amount
         date: newTransaction.date,
         description: newTransaction.description,
-        transactionType: newTransaction.transaction_type, // Use transactionType instead of transaction_type
+        transactionType: newTransaction.transactionType,
         merchant: newTransaction.merchant,
-        userId: userId // Make sure userId is not null
-      }
+        userId: userId,
+      },
     };
   
     try {
       const response = await request("http://localhost:3000/graphql", mutation, variables);
       setTransactions([...transactions, response.createTransaction.transaction]);
       setNewTransaction({
+        id: "", // Add the 'id' property
         name: "",
-        amount: "",
+        amount: 0, // Fix: Change the type from string to number
         date: "",
         description: "",
-        transaction_type: "",
+        transactionType: "",
         merchant: "",
       });
       toast.success("Transaction added successfully!");
@@ -104,12 +122,12 @@ const Transactions = () => {
   };
   
 
-  const deleteTransaction = async (transactionId) => {
+  const deleteTransaction = async (transactionId: string) => {
     if (!userId) {
       console.error("User ID is not set.");
       return;
     }
-  
+
     const mutation = `
       mutation DeleteTransaction($input: DeleteTransactionInput!) {
         deleteTransaction(input: $input) {
@@ -118,9 +136,9 @@ const Transactions = () => {
         }
       }
     `;
-    
+
     const variables = { input: { id: transactionId, userId: userId } };
-    
+
     try {
       await request("http://localhost:3000/graphql", mutation, variables);
       setTransactions(transactions.filter((transaction) => transaction.id !== transactionId));
@@ -129,10 +147,9 @@ const Transactions = () => {
       console.error("Failed to delete transaction:", error);
       toast.error("Failed to delete transaction");
     }
-  };  
-  
+  };
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setNewTransaction({ ...newTransaction, [name]: value });
   };
@@ -142,7 +159,7 @@ const Transactions = () => {
       <ToastContainer />
       <h2 className="text-center text-2xl font-bold mb-6">Transactions</h2>
       <button
-        onClick={() => exportTransactions(userId)}
+        onClick={() => exportTransactions(userId!)}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Export to Excel
@@ -185,8 +202,8 @@ const Transactions = () => {
           />
           <input
             type="text"
-            name="transaction_type"
-            value={newTransaction.transaction_type}
+            name="transactionType"
+            value={newTransaction.transactionType}
             onChange={handleChange}
             placeholder="Type"
             className="border border-gray-300 p-2 rounded-md"
@@ -216,7 +233,7 @@ const Transactions = () => {
                 <h3 className="font-bold">{transaction.name}</h3>
                 <p className="text-gray-600">{transaction.description}</p>
                 <p className="text-gray-600">
-                  {transaction.transaction_type} | {transaction.merchant}
+                  {transaction.transactionType} | {transaction.merchant}
                 </p>
                 <p className="text-gray-600">{transaction.date}</p>
                 <p className="text-gray-600">${transaction.amount}</p>
