@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "bank_accounts", force: :cascade do |t|
     t.string "account_type"
     t.string "account_number"
@@ -21,7 +24,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
     t.string "status"
     t.string "branch_code"
     t.boolean "overdraft_protection"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_bank_accounts_on_user_id"
@@ -35,7 +38,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
     t.decimal "total_income", precision: 10, scale: 2
     t.decimal "total_expenses", precision: 10, scale: 2
     t.string "status", default: "upcoming"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
@@ -51,7 +54,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
     t.date "last_payment_date"
     t.decimal "total_paid", precision: 10, scale: 2, default: "0.0"
     t.text "description"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_debts_on_user_id"
@@ -67,7 +70,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
     t.boolean "reimbursable"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_expenses_on_user_id"
   end
 
@@ -78,7 +81,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_05_142737) do
     t.text "description"
     t.string "transaction_type"
     t.string "merchant"
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_transactions_on_user_id"
