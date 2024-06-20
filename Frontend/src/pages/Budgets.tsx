@@ -64,7 +64,7 @@ const Budgets: React.FC = () => {
   
     const variables = {
       input: {
-        userId: 10, // Include the userId here
+        userId: 1, // Include the userId here
         name: newBudgetName,
         savingsGoal: parseFloat(newBudgetSavingsGoal),
         totalIncome: parseFloat(newBudgetTotalIncome),
