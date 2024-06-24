@@ -7,7 +7,7 @@ module Mutations
     argument :purpose, String, required: true
     argument :reimbursable, Boolean, required: false
     argument :user_id, ID, required: true
-    argument :receipt, String, required: false  # Add this line for the receipt
+    argument :receipt, String, required: false
 
     field :expense, Types::ExpenseType, null: false
 
@@ -20,7 +20,7 @@ module Mutations
         amount: amount,
         purpose: purpose,
         reimbursable: reimbursable,
-        receipt: receipt  # Include receipt in the creation
+        receipt: receipt
       )
       { expense: expense }
     end

@@ -90,3 +90,37 @@ mutation DestroyExpense($input: DestroyExpenseInput!) {
     message
   }
 }
+
+
+query GetDebtsByUserId($userId: ID!) {
+  user(id: $userId) {
+    debts {
+      id
+      amount
+      creditor
+      debtor
+      description
+      dueDate
+      status
+      createdAt
+      updatedAt
+    }
+  }
+}
+  
+
+mutation CreateDebt($input: CreateDebtInput!) {
+  createDebt(input: $input) {
+    debt {
+      id
+      amount
+      creditor
+      debtor
+      description
+      dueDate
+      status
+      createdAt
+      updatedAt
+    }
+  }
+}
