@@ -7,6 +7,7 @@ module Types
     field :bank_accounts, [BankAccountType], null: true
     field :transactions, [TransactionType], null: true
     field :expenses, [ExpenseType], null: true
+    field :debts, [DebtType], null: true 
 
     def bank_accounts
       object.bank_accounts
@@ -19,5 +20,10 @@ module Types
     def expenses
       object.expenses
     end
+
+    def debts
+      object.debts
+    end
+    
   end
 end

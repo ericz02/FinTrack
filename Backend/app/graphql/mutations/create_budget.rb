@@ -1,7 +1,5 @@
-# app/graphql/mutations/create_budget.rb
 module Mutations
   class CreateBudget < BaseMutation
-    # define arguments here
     argument :user_id, ID, required: true
     argument :name, String, required: true
     argument :savings_goal, Float, required: true
@@ -9,7 +7,6 @@ module Mutations
     argument :total_expenses, Float, required: true
     argument :status, String, required: true
 
-    # define return type here
     type Types::BudgetType
 
     def resolve(user_id:, name:, savings_goal:, total_income:, total_expenses:, status:)

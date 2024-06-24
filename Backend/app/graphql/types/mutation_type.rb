@@ -21,6 +21,9 @@ module Types
     # Mutations for Expense
     field :create_expense, mutation: Mutations::CreateExpense
     field :destroy_expense, mutation: Mutations::DestroyExpense
-    
+
+    # Mutations for Debt
+    field :create_debt, mutation: Mutations::CreateDebt
+    field :destroy_debt, mutation: Mutations::DestroyDebt
   end
 end
