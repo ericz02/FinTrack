@@ -34,3 +34,6 @@
 
 # Ignore public files that are uploaded.
 /config/credentials.yml.enc
+
+# Ignore assets in Backend/public/assets
+Backend/public/assets/
