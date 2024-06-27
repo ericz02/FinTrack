@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
-    root to: redirect('/graphiql')
+    root "welcome#index", via: [:get, :head, :options]
   else
     root to: 'home#index'
   end
