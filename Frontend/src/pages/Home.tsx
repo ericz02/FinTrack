@@ -5,7 +5,8 @@ const Home: React.FC = () => {
   return (
     <div className="relative">
       <img
-        src="src/assets/8524544.jpg"
+        // src="src/assets/8524544.jpg"
+        src='frontend/dist/8524544.jpg'
         alt="home"
         className="w-full"
       />
