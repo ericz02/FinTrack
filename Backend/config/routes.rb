@@ -1,28 +1,21 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   if Rails.env.development?
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
+    root to: redirect('/graphiql')
+  else
+    root to: 'welcome#index'
   end
+
   post "/graphql", to: "graphql#execute"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  
   get 'up' => 'rails/health#show', as: :rails_health_check
-
-  # Defines the root path route ("/")
-  # root "posts#index"
-
-  # Redirect root path to GraphiQL in development mode
-  root to: redirect('/graphiql') if Rails.env.development?
 
   resources :users, only: %i[create index show update] do
     resources :transactions, only: %i[show create index destroy] do
       get 'export', on: :collection
     end
     resources :debts, only: %i[show create index destroy]
-    resources :expenses, only: %i[create index show updat destroy] do
+    resources :expenses, only: %i[create index show update destroy] do
       get 'export', on: :collection
     end
     resources :bank_accounts, only: %i[create index show update destroy]
