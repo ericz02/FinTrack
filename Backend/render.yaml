@@ -9,9 +9,11 @@ services:
     name: fintrack
     runtime: ruby
     plan: free
-    buildCommand: "./backend/bin/render-build.sh"
+    # buildCommand: "./backend/bin/render-build.sh"
+    buildCommand: "bundle install && rails db:migrate"
     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    startCommand: "bundle exec rails server -p $PORT"
+    # startCommand: "bundle exec rails server -p $PORT"
+    startCommand: "rails s -p 3000 -e development -b 0.0.0.0"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
