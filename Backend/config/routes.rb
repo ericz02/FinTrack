@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/graphql"
     root to: redirect('/graphiql')
   else
-    root to: 'welcome#index'
+    root to: 'home#index'
   end
 
   post "/graphql", to: "graphql#execute"
