@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
+  # Redirect root path to GraphiQL in development mode
+  root to: redirect('/graphiql') if Rails.env.development?
+
   resources :users, only: %i[create index show update] do
     resources :transactions, only: %i[show create index destroy] do
       get 'export', on: :collection
