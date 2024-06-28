@@ -1,23 +1,20 @@
 databases:
-  - name: fintrack
-    databaseName: fintrack
+  - name: FinTrack-psql
+    databaseName: FinTrack-psql
     user: fintrack
     plan: free
 
 services:
   - type: web
-    name: fintrack
+    name: FinTrack
     runtime: ruby
     plan: free
-    # buildCommand: "./backend/bin/render-build.sh"
     buildCommand: "bundle install && rails db:migrate"
-    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    # startCommand: "bundle exec rails server -p $PORT"
     startCommand: "rails s -p 3000 -e development -b 0.0.0.0"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: fintrack
+          name: FinTrack-psql
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
@@ -25,3 +22,15 @@ services:
         value: 2 # sensible default
       - key: PORT
         value: 3000 # sensible default
+      - key: VITE_API_URL
+        value: https://fintrack-nygf.onrender.com
+
+  - type: static_site
+    name: FinTrack-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://fintrack-nygf.onrender.com
