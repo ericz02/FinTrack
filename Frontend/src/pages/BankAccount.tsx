@@ -58,7 +58,7 @@ const BankAccounts: React.FC = () => {
       const variables = { userId };
 
       try {
-        const response = await request("http://localhost:3000/graphql", query, variables);
+        const response = await request("https://fintrack-nygf.onrender.com/graphql", query, variables);
         setBankAccounts(response.user.bankAccounts);
       } catch (error) {
         console.error("Error fetching bank accounts:", error);
@@ -117,7 +117,7 @@ const BankAccounts: React.FC = () => {
   
     try {
       const response = await request(
-        "http://localhost:3000/graphql",
+        "https://fintrack-nygf.onrender.com/graphql",
         mutation,
         variables
       );
@@ -156,7 +156,7 @@ const BankAccounts: React.FC = () => {
     const variables = { id: bankAccountId };
   
     try {
-      await request("http://localhost:3000/graphql", mutation, variables);
+      await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables);
       setBankAccounts(bankAccounts.filter((account) => account.id !== bankAccountId));
       toast.success("Bank account deleted successfully!");
     } catch (error) {

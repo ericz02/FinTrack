@@ -1,6 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request';
 
-const endpoint = 'http://localhost:3000/graphql';
+const endpoint = process.env.VITE_API_URL as string;
 const client = new GraphQLClient(endpoint);
 
 interface SignupResponse {
