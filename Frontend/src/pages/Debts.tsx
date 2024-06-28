@@ -61,11 +61,7 @@ const Debts: React.FC = () => {
     const variables = { userId };
 
     try {
-      const response = await request(
-        "https://fintrack-nygf.onrender.com/graphql",
-        query,
-        variables
-      );
+      const response = await request("https://fintrack-nygf.onrender.com/graphql", query, variables);
       setDebts(response.user.debts);
     } catch (error) {
       console.error("Error fetching debts:", error);
@@ -75,11 +71,11 @@ const Debts: React.FC = () => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
     if (!event.currentTarget) {
       return;
     }
-
+  
     const formData = new FormData(event.currentTarget);
     const amount = parseFloat(formData.get("amount") as string);
     const creditor = formData.get("creditor") as string;
@@ -87,12 +83,12 @@ const Debts: React.FC = () => {
     const description = formData.get("description") as string;
     const dueDate = formData.get("dueDate") as string;
     const status = formData.get("status") as string;
-
+  
     if (!debtor) {
       toast.error("Debtor cannot be empty");
       return;
     }
-
+  
     const mutation = `
       mutation CreateDebt($input: CreateDebtInput!) {
         createDebt(input: $input) {
@@ -110,10 +106,10 @@ const Debts: React.FC = () => {
         }
       }
     `;
-
+  
     const variables = {
       input: {
-        userId: 1, // Update with actual userId handling
+        userId: 1,
         amount,
         creditor,
         debtor,
@@ -122,13 +118,9 @@ const Debts: React.FC = () => {
         status,
       },
     };
-
+  
     try {
-      const response = await request(
-        "https://fintrack-nygf.onrender.com/graphql",
-        mutation,
-        variables
-      );
+      const response = await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables);
       setDebts([...debts, response.createDebt.debt]);
       // Reset the form fields
       toast.success("Debt added successfully!");
@@ -137,7 +129,8 @@ const Debts: React.FC = () => {
       toast.error("Failed to save debt");
     }
   };
-
+  
+  
   const handleDelete = async (debtId: string) => {
     const mutation = `
       mutation DeleteDebt($id: ID!) {
@@ -146,15 +139,11 @@ const Debts: React.FC = () => {
         }
       }
     `;
-
+  
     const variables = { id: debtId };
-
+  
     try {
-      await request(
-        "https://fintrack-nygf.onrender.com/graphql",
-        mutation,
-        variables
-      );
+      await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables);
       setDebts(debts.filter((debt) => debt.id !== debtId));
       toast.success("Debt deleted successfully!");
     } catch (error) {
@@ -162,6 +151,7 @@ const Debts: React.FC = () => {
       toast.error("Failed to delete debt");
     }
   };
+  
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -172,6 +162,7 @@ const Debts: React.FC = () => {
       [name]: value,
     }));
   };
+
 
   return (
     <div className="container mx-auto p-4">

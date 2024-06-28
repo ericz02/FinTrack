@@ -16,13 +16,13 @@ interface UserProps {
   userId: string | undefined;
 }
 
-const User: React.FC<UserProps> = ({ userId, }) => {
+const User: React.FC<UserProps> = ({ userId }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get<UserData>(`http://localhost:3000/users/${userId}`);
+        const response = await axios.get<UserData>(`https://fintrack-nygf.onrender.com/users/${userId}`); // Updated URL here
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);

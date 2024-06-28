@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../context/AuthContext";
@@ -53,7 +52,7 @@ const Transactions: React.FC = () => {
       const variables = { userId };
 
       try {
-        const response = await request("http://localhost:3000/graphql", query, variables);
+        const response = await request("https://fintrack-nygf.onrender.com/graphql", query, variables); // Updated URL here
         setTransactions(response.user.transactions);
       } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -103,7 +102,7 @@ const Transactions: React.FC = () => {
     };
   
     try {
-      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      const response = await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables); // Updated URL here
       setTransactions([...transactions, response.createTransaction.transaction]);
       setNewTransaction({
         id: "", // Add the 'id' property
@@ -140,7 +139,7 @@ const Transactions: React.FC = () => {
     const variables = { input: { id: transactionId, userId: userId } };
 
     try {
-      await request("http://localhost:3000/graphql", mutation, variables);
+      await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables); // Updated URL here
       setTransactions(transactions.filter((transaction) => transaction.id !== transactionId));
       toast.success("Transaction deleted successfully!");
     } catch (error) {

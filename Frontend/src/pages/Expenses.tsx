@@ -56,7 +56,7 @@ const Expenses: React.FC = () => {
     const variables = { userId };
 
     try {
-      const response = await request("http://localhost:3000/graphql", query, variables);
+      const response = await request("https://fintrack-nygf.onrender.com/graphql", query, variables); // Updated URL here
       setExpenses(response.user.expenses);
     } catch (error) {
       console.error("Error fetching expenses:", error);
@@ -66,7 +66,7 @@ const Expenses: React.FC = () => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-  
+
     const mutation = `
       mutation CreateExpense($input: CreateExpenseInput!) {
         createExpense(input: $input) {
@@ -83,7 +83,7 @@ const Expenses: React.FC = () => {
         }
       }
     `;
-  
+
     const variables = {
       input: {
         ...newExpense,
@@ -93,9 +93,9 @@ const Expenses: React.FC = () => {
         userId: userId!,
       },
     };
-  
+
     try {
-      const response = await request("http://localhost:3000/graphql", mutation, variables);
+      const response = await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables); // Updated URL here
       setExpenses([...expenses, response.createExpense.expense]);
       setNewExpense({
         id: "",
@@ -113,7 +113,6 @@ const Expenses: React.FC = () => {
       toast.error("Failed to save expense");
     }
   };
-  
 
   const handleDelete = async (expenseId: string) => {
     const mutation = `
@@ -129,7 +128,7 @@ const Expenses: React.FC = () => {
     };
 
     try {
-      await request("http://localhost:3000/graphql", mutation, variables);
+      await request("https://fintrack-nygf.onrender.com/graphql", mutation, variables); // Updated URL here
       setExpenses(expenses.filter((exp) => exp.id !== expenseId));
       toast.success("Expense deleted successfully!");
     } catch (error) {
@@ -154,7 +153,7 @@ const Expenses: React.FC = () => {
       receipt: event.target.files ? event.target.files[0] : null,
     }));
   };
-
+  
   return (
     <div className="container mx-auto p-4">
       <ToastContainer />

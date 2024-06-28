@@ -15,10 +15,13 @@ const Login: React.FC = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post<{ user: { id: string; email: string; name: string } }>("http://localhost:3000/login", {
-        email: email,
-        password: password,
-      });
+      const response = await axios.post<{ user: { id: string; email: string; name: string } }>(
+        "https://fintrack-nygf.onrender.com/login", // Updated URL here
+        {
+          email: email,
+          password: password,
+        }
+      );
       console.log("Login success:", response.data);
       login(response.data.user); // Passing the user object that contains id, email, and name
       toast.success("Login successful!");
