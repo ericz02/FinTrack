@@ -1,6 +1,6 @@
 import { GraphQLClient, gql } from 'graphql-request';
 
-const endpoint = process.env.VITE_API_URL as string;
+const endpoint = 'https://fintrack-nygf.onrender.com/graphql'; 
 const client = new GraphQLClient(endpoint);
 
 interface SignupResponse {
