@@ -49,23 +49,23 @@ const Dashboard: React.FC = () => {
     if (!userId) return;
 
     const fetchData = async () => {
-      interface DashboardData extends FinancialSummary {
-        transactions: any[];
-        expenses: Expense[];
-        bankAccounts: any[];
-        debts: any[];
-        netWorth: number;
-        totalDebt: number;
-        totalSavings: number;
-        totalExpenses: number;
-        totalTransaction: number;
-        TotalBankBalance: number;
-        financial_summary: FinancialSummary;
-      }
-
       try {
+        interface DashboardData extends FinancialSummary {
+          transactions: any[];
+          expenses: Expense[];
+          bankAccounts: any[];
+          debts: any[];
+          netWorth: number;
+          totalDebt: number;
+          totalSavings: number;
+          totalExpenses: number;
+          totalTransaction: number;
+          TotalBankBalance: number;
+          financial_summary: FinancialSummary;
+        }
+
         const response = await axios.get<DashboardData>(
-          `http://localhost:3000/users/${userId}/dashboard`
+          `https://fintrack-nygf.onrender.com/users/${userId}/dashboard`
         );
         setData((prevData) => ({
           ...prevData,

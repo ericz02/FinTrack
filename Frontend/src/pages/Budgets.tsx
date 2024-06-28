@@ -35,7 +35,10 @@ const Budgets: React.FC = () => {
       `;
 
       try {
-        const data = await request("http://localhost:3000/graphql", query);
+        const data = await request(
+          "https://fintrack-nygf.onrender.com/graphql",
+          query
+        );
         setBudgets(data.budgets);
       } catch (error) {
         console.error("Error fetching budgets:", error);
@@ -75,7 +78,7 @@ const Budgets: React.FC = () => {
   
     try {
       const data = await request(
-        "http://localhost:3000/graphql",
+        "https://fintrack-nygf.onrender.com/graphql",
         mutation,
         variables
       );
@@ -107,7 +110,11 @@ const Budgets: React.FC = () => {
     };
 
     try {
-      await request("http://localhost:3000/graphql", mutation, variables);
+      await request(
+        "https://fintrack-nygf.onrender.com/graphql",
+        mutation,
+        variables
+      );
       setBudgets(budgets.filter((budget) => budget.id !== id));
     } catch (error) {
       console.error("Failed to delete budget:", error);
