@@ -64,4 +64,6 @@ gem "propshaft", "~> 0.9.0"
 
 group :development, :test do
   gem 'rspec-rails', '~> 5.0'
+  gem 'factory_bot_rails'
+  gem "database_cleaner"
 end
